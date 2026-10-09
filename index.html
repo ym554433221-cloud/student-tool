@@ -1,1396 +1,989 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-LYBRD2NG7W"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-LYBRD2NG7W');
-</script>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#101426">
-<meta name="description" content="Student Tool Pro - Free study planner, focus timer, grade calculator, flashcards and quizzes.">
-<title>Student Tool Pro | Study Smarter</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Student Tool is a free website with study tools, a focus timer, grade calculator, notes, and task planner.">
+  <meta name="theme-color" content="#635bff">
+  <title>Student Tool | Free Study Tools</title>
 
-<style>
-:root {
-  --bg:#0d1020;
-  --panel:#171b30;
-  --panel2:#202640;
-  --text:#f4f5ff;
-  --muted:#a5acc8;
-  --primary:#8875ff;
-  --cyan:#49d7e8;
-  --border:#303652;
-  --green:#46d6a0;
-  --red:#ff7185;
-  --shadow:0 15px 45px #0002;
-}
-body.light {
-  --bg:#f3f5fc;
-  --panel:#ffffff;
-  --panel2:#edf0fa;
-  --text:#202540;
-  --muted:#66708a;
-  --primary:#6250e8;
-  --cyan:#008ca3;
-  --border:#dfe4f2;
-  --shadow:0 10px 30px #23335b0b;
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0;background:var(--bg);color:var(--text);
-  font-family:Arial,sans-serif;transition:.2s;
-}
-button,input,textarea,select{font:inherit}
-button{cursor:pointer}
-button:focus-visible,input:focus-visible,textarea:focus-visible,
-select:focus-visible,a:focus-visible{
-  outline:2px solid var(--cyan);outline-offset:3px;
-}
-button:disabled{opacity:.45;cursor:not-allowed}
-a{color:inherit;text-decoration:none}
-.topbar{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:12px;padding:17px 5%;border-bottom:1px solid var(--border);
-  background:var(--panel);position:sticky;top:0;z-index:5;
-}
-.brand{font-size:21px;font-weight:800;letter-spacing:-.5px}
-.brand span{color:var(--primary)}
-.top-actions{display:flex;align-items:center;gap:9px}
-.btn{
-  border:0;background:var(--primary);color:white;padding:11px 15px;
-  border-radius:10px;font-weight:700;transition:.2s;
-}
-.btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
-.btn.alt{background:var(--panel2);color:var(--text)}
-.btn.danger{background:#b93752;color:white}
-.btn.small{padding:7px 10px;font-size:13px}
-.shell{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:calc(100vh - 68px)}
-.sidebar{
-  border-right:1px solid var(--border);padding:22px 13px;
-  background:var(--panel);
-}
-.side-label{
-  color:var(--muted);font-size:11px;font-weight:bold;
-  letter-spacing:1.5px;margin:15px 12px 10px;
-}
-.nav-btn{
-  width:100%;display:flex;align-items:center;gap:12px;
-  padding:13px;border:0;border-radius:10px;background:transparent;
-  color:var(--muted);text-align:left;margin:3px 0;
-}
-.nav-btn:hover,.nav-btn.active{background:var(--panel2);color:var(--text)}
-.nav-btn.active{box-shadow:inset 3px 0 var(--primary)}
-main{padding:30px;min-width:0;max-width:1500px;width:100%;margin:0 auto}
-.page{display:none}
-.page.active{display:block;animation:fade .22s ease}
-@keyframes fade{from{opacity:.5;transform:translateY(4px)}to{opacity:1;transform:none}}
-.welcome{
-  border:1px solid var(--border);border-radius:22px;padding:30px;
-  background:radial-gradient(ellipse at 90% 10%,#8875ff35,transparent 55%),var(--panel);
-  margin-bottom:24px;
-}
-.welcome h1{font-size:clamp(27px,4vw,40px);margin:0 0 12px}
-.welcome p{color:var(--muted);line-height:1.7;margin:0}
-.eyebrow{color:var(--cyan);font-weight:bold;font-size:12px;letter-spacing:1.7px}
-.section-title{font-size:22px;margin:27px 0 16px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.grid.four{grid-template-columns:repeat(4,minmax(0,1fr))}
-.card{
-  background:var(--panel);border:1px solid var(--border);
-  border-radius:17px;padding:21px;min-width:0;box-shadow:var(--shadow);
-}
-.card h3{margin:0 0 10px;font-size:17px}
-.card p,.muted{color:var(--muted);line-height:1.6}
-.stat{font-size:30px;font-weight:800;margin:12px 0 6px;overflow-wrap:anywhere}
-.stat-label{font-size:13px;color:var(--muted)}
-.progress{height:9px;border-radius:20px;background:var(--panel2);overflow:hidden;margin:13px 0}
-.progress div{height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--cyan));transition:width .25s}
-input,textarea,select{
-  width:100%;padding:12px;border:1px solid var(--border);
-  background:var(--bg);color:var(--text);border-radius:10px;margin:6px 0;
-}
-textarea{resize:vertical;min-height:100px}
-label{font-size:13px;color:var(--muted);display:block;margin-top:10px}
-.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
-.row>*{flex:1;min-width:0}
-.row .btn{flex:0 0 auto}
-.result{
-  background:var(--panel2);padding:13px;border-radius:10px;
-  margin-top:12px;line-height:1.6;overflow-wrap:anywhere;
-}
-.tool-icon{font-size:25px;margin-bottom:14px}
-.tool-card{cursor:pointer;transition:.2s}
-.tool-card:hover{transform:translateY(-3px);border-color:var(--primary)}
-.tool-card p{font-size:13px}
-.task{
-  display:flex;align-items:center;gap:10px;padding:12px 0;
-  border-bottom:1px solid var(--border);min-width:0;
-}
-.task input{width:18px;flex:0 0 18px;margin:0}
-.task-name{flex:1;overflow-wrap:anywhere}
-.task.done .task-name{text-decoration:line-through;color:var(--muted)}
-.task-meta{font-size:11px;color:var(--muted);margin-top:5px}
-.pill{font-size:11px;padding:5px 8px;border-radius:20px;background:var(--panel2)}
-.priority-high{color:var(--red)}
-.priority-normal{color:var(--cyan)}
-.timer{
-  font-size:clamp(55px,12vw,90px);font-weight:800;text-align:center;
-  font-variant-numeric:tabular-nums;letter-spacing:-3px;margin:20px 0;
-}
-.timer-ring{
-  width:min(300px,75vw);aspect-ratio:1;border-radius:50%;
-  margin:20px auto;display:grid;place-items:center;
-  background:conic-gradient(var(--primary) var(--pct,100%),var(--panel2) 0);
-  position:relative;
-}
-.timer-ring:before{
-  content:"";position:absolute;inset:10px;background:var(--panel);
-  border-radius:50%;
-}
-.timer-inner{position:relative;width:100%}
-.flashcard{
-  min-height:190px;display:grid;place-items:center;text-align:center;
-  padding:25px;border:1px solid var(--border);border-radius:18px;
-  background:var(--panel2);font-size:22px;font-weight:bold;line-height:1.6;
-  cursor:pointer;overflow-wrap:anywhere;
-}
-.flashcard small{display:block;font-size:12px;color:var(--muted);margin-top:12px}
-.choice{
-  display:block;width:100%;text-align:left;background:var(--panel2);
-  color:var(--text);border:1px solid var(--border);padding:13px;
-  border-radius:10px;margin:9px 0;
-}
-.choice:hover{border-color:var(--primary)}
-.choice.correct{border-color:var(--green)}
-.choice.wrong{border-color:var(--red)}
-hr{border:0;border-top:1px solid var(--border);margin:18px 0}
-.hidden{display:none!important}
-.empty{text-align:center;color:var(--muted);padding:22px 5px}
-footer{text-align:center;padding:30px 15px;color:var(--muted);font-size:12px}
-#toast{
-  position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
-  background:var(--text);color:var(--bg);padding:12px 18px;
-  border-radius:12px;z-index:20;box-shadow:var(--shadow);
-  max-width:90%;text-align:center;
-}
-@media(max-width:900px){
-  .grid.four{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .shell{grid-template-columns:1fr}
-  .sidebar{
-    position:sticky;top:65px;z-index:4;border-right:0;
-    border-bottom:1px solid var(--border);padding:8px;
-    display:flex;overflow-x:auto;gap:4px;
-  }
-  .side-label{display:none}
-  .nav-btn{width:auto;white-space:nowrap;padding:11px}
-  main{padding:20px}
-}
-@media(max-width:520px){
-  main{padding:14px}
-  .grid,.grid.four{grid-template-columns:1fr}
-  .welcome{padding:22px}
-  .topbar{padding:13px 4%}
-  .brand{font-size:17px}
-  .top-actions .btn{padding:9px;font-size:12px}
-  .card{padding:17px}
-  .nav-btn{font-size:12px;padding:10px}
-}
-</style>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LYBRD2NG7W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-LYBRD2NG7W');
+  </script>
+
+  <style>
+    :root {
+      --primary: #635bff;
+      --primary-dark: #4f46e5;
+      --bg: #f5f6fc;
+      --card: #ffffff;
+      --text: #20223a;
+      --muted: #70748b;
+      --border: #e6e8f1;
+      --success: #16845b;
+      --danger: #d94848;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    button, input, textarea, select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    a {
+      color: var(--primary);
+    }
+
+    .topbar {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 15px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 23px;
+      font-weight: bold;
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    nav button {
+      border: 0;
+      background: transparent;
+      padding: 8px 11px;
+      border-radius: 9px;
+      color: var(--text);
+    }
+
+    nav button:hover,
+    nav button.active {
+      background: #eeedff;
+      color: var(--primary-dark);
+    }
+
+    main {
+      max-width: 1150px;
+      margin: auto;
+      padding: 28px 18px 50px;
+      min-height: 75vh;
+    }
+
+    .hero {
+      background: linear-gradient(130deg, #635bff, #8b5cf6);
+      color: white;
+      border-radius: 20px;
+      padding: 35px;
+      margin-bottom: 25px;
+    }
+
+    .hero h1 {
+      font-size: clamp(27px, 5vw, 42px);
+      margin: 0 0 10px;
+    }
+
+    .hero p {
+      max-width: 650px;
+      margin-bottom: 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 15px rgba(25, 30, 70, 0.035);
+    }
+
+    .card h2, .card h3 {
+      margin-top: 0;
+    }
+
+    .tool-icon {
+      font-size: 29px;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .btn {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 16px;
+      text-decoration: none;
+      margin: 4px 3px 4px 0;
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn.secondary {
+      background: #ecebff;
+      color: var(--primary-dark);
+    }
+
+    .btn.danger {
+      background: var(--danger);
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 11px 12px;
+      margin: 6px 0 12px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: white;
+      color: #20223a;
+    }
+
+    textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 7px;
+    }
+
+    .timer-display {
+      font-size: clamp(48px, 10vw, 76px);
+      font-weight: bold;
+      text-align: center;
+      margin: 15px 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    .task-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .task-row input {
+      width: auto;
+      margin: 0;
+    }
+
+    .task-row .task-text {
+      flex: 1;
+      overflow-wrap: anywhere;
+    }
+
+    .task-row.done .task-text {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    .result {
+      font-size: 22px;
+      font-weight: bold;
+      color: var(--primary-dark);
+      margin-top: 12px;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    footer {
+      text-align: center;
+      padding: 28px 15px;
+      background: white;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    footer a {
+      margin: 0 7px;
+      text-decoration: none;
+    }
+
+    .small {
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+      .topbar {
+        padding: 13px;
+      }
+
+      nav {
+        width: 100%;
+      }
+
+      nav button {
+        padding: 7px;
+        font-size: 13px;
+      }
+
+      .hero {
+        padding: 25px 20px;
+      }
+
+      main {
+        padding: 20px 12px 35px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
 <header class="topbar">
-  <a class="brand" href="#" onclick="navigate('home');return false">STUDENT<span>PRO.</span></a>
-  <div class="top-actions">
-    <span class="pill" id="dateLabel">STUDY MODE</span>
-    <button class="btn alt" onclick="toggleTheme()" id="themeBtn" aria-label="Toggle theme">☀️</button>
-  </div>
+  <a class="logo" href="#home" onclick="showPage('home')">Student Tool</a>
+
+  <nav aria-label="Main navigation">
+    <button class="active" data-page="home" onclick="showPage('home')">Home</button>
+    <button data-page="timer" onclick="showPage('timer')">Focus Timer</button>
+    <button data-page="planner" onclick="showPage('planner')">Planner</button>
+    <button data-page="grades" onclick="showPage('grades')">Grades</button>
+    <button data-page="calculator" onclick="showPage('calculator')">Calculator</button>
+    <button data-page="notes" onclick="showPage('notes')">Notes</button>
+    <button data-page="flashcards" onclick="showPage('flashcards')">Flashcards</button>
+    <button data-page="about" onclick="showPage('about')">About</button>
+  </nav>
 </header>
 
-<div class="shell">
-  <aside class="sidebar">
-    <div class="side-label">WORKSPACE</div>
-    <button class="nav-btn active" data-page="home" onclick="navigate('home')">🏠 Dashboard</button>
-    <button class="nav-btn" data-page="planner" onclick="navigate('planner')">✅ Planner</button>
-    <button class="nav-btn" data-page="focus" onclick="navigate('focus')">⏱️ Focus Timer</button>
-    <div class="side-label">LEARNING</div>
-    <button class="nav-btn" data-page="grades" onclick="navigate('grades')">📊 Grade Calculator</button>
-    <button class="nav-btn" data-page="flashcards" onclick="navigate('flashcards')">🗂️ Flashcards</button>
-    <button class="nav-btn" data-page="quiz" onclick="navigate('quiz')">🧠 Quick Quiz</button>
-    <div class="side-label">UTILITIES</div>
-    <button class="nav-btn" data-page="calculator" onclick="navigate('calculator')">🧮 Calculator</button>
-    <button class="nav-btn" data-page="notes" onclick="navigate('notes')">📝 Notes</button>
-    <button class="nav-btn" data-page="settings" onclick="navigate('settings')">⚙️ Settings</button>
-  </aside>
+<main>
 
-  <main>
-    <section class="page active" id="page-home">
-      <div class="welcome">
-        <div class="eyebrow">YOUR PERSONAL STUDY SPACE</div>
-        <h1 id="greeting">Ready to level up? 🚀</h1>
-        <p>Small steps every day. Big results over time.</p>
-        <div class="row" style="margin-top:22px">
-          <button class="btn" onclick="navigate('focus')">Start focusing →</button>
-          <button class="btn alt" onclick="navigate('planner')">View my tasks</button>
-        </div>
-      </div>
+  <!-- HOME -->
+  <section id="page-home" class="page active">
+    <div class="hero">
+      <h1>Study smarter with Student Tool 🚀</h1>
+      <p>Free and simple tools to help students organize tasks, focus on studying, calculate grades, and save notes.</p>
+      <button class="btn" style="background:white;color:#5148df" onclick="showPage('timer')">Start studying</button>
+    </div>
 
-      <div class="grid four">
-        <div class="card">
-          <div class="stat" id="statTasks">0/0</div>
-          <div class="stat-label">Tasks completed</div>
-                  </div>
-        <div class="card">
-          <div class="stat" id="statMinutes">0</div>
-          <div class="stat-label">Focus minutes today</div>
-        </div>
-        <div class="card">
-          <div class="stat" id="statStreak">0</div>
-          <div class="stat-label">Focus sessions today</div>
-        </div>
-        <div class="card">
-          <div class="stat" id="statCards">0</div>
-          <div class="stat-label">Flashcards created</div>
-        </div>
-      </div>
-
-      <h2 class="section-title">Daily progress</h2>
+    <div class="grid">
       <div class="card">
-        <div class="row">
-          <div><h3>Your task progress</h3><p id="progressText">Let's get started.</p></div>
-          <div class="stat" id="progressNumber" style="text-align:right">0%</div>
-        </div>
-        <div class="progress"><div id="progressBar"></div></div>
-        <button class="btn" onclick="navigate('planner')">Manage tasks</button>
+        <div class="tool-icon">⏱️</div>
+        <h3>Focus Timer</h3>
+        <p class="muted">Focus on your work with a countdown timer.</p>
+        <button class="btn" onclick="showPage('timer')">Open Timer</button>
       </div>
 
-      <h2 class="section-title">Explore your tools</h2>
-      <div class="grid">
-        <div class="card tool-card" onclick="navigate('grades')">
-          <div class="tool-icon">📊</div><h3>Grade Calculator</h3>
-          <p>Calculate your marks and percentages.</p>
-        </div>
-        <div class="card tool-card" onclick="navigate('flashcards')">
-          <div class="tool-icon">🗂️</div><h3>Flashcards</h3>
-          <p>Review key concepts and definitions.</p>
-        </div>
-        <div class="card tool-card" onclick="navigate('quiz')">
-          <div class="tool-icon">🧠</div><h3>Quick Quiz</h3>
-          <p>Test yourself with a short quiz.</p>
-        </div>
-        <div class="card tool-card" onclick="navigate('notes')">
-          <div class="tool-icon">📝</div><h3>Quick Notes</h3>
-          <p>Save important ideas in your browser.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="page" id="page-planner">
-      <div class="eyebrow">GET THINGS DONE</div>
-      <h1>Study Planner ✅</h1>
-      <p class="muted">Plan your work, prioritize and track your progress.</p>
       <div class="card">
-        <h3>Add a task</h3>
-        <form id="taskForm">
-          <label for="taskName">Task name</label>
-          <input id="taskName" maxlength="140" required placeholder="e.g. Revise biology chapter 3">
-          <div class="row">
-            <div><label for="taskSubject">Subject</label>
-              <input id="taskSubject" maxlength="50" placeholder="e.g. Biology"></div>
-            <div><label for="taskDate">Due date</label>
-              <input id="taskDate" type="date"></div>
-          </div>
-          <div class="row">
-            <div><label for="taskPriority">Priority</label>
-              <select id="taskPriority">
-                <option value="normal">Normal</option>
-                <option value="high">High priority</option>
-              </select></div>
-            <div><label for="taskFilter">Show tasks</label>
-              <select id="taskFilter">
-                <option value="all">All tasks</option>
-                <option value="active">Not completed</option>
-                <option value="done">Completed</option>
-              </select></div>
-          </div>
-          <button class="btn" type="submit">+ Add task</button>
-        </form>
+        <div class="tool-icon">📅</div>
+        <h3>Task Planner</h3>
+        <p class="muted">Organize your study tasks and track your progress.</p>
+        <button class="btn" onclick="showPage('planner')">Open Planner</button>
       </div>
-      <div class="card" style="margin-top:16px">
-        <div class="row"><h3>My tasks</h3><button class="btn alt small" onclick="clearCompleted()">Clear completed</button></div>
-        <div id="taskList"></div>
-      </div>
-    </section>
 
-    <section class="page" id="page-focus">
-      <div class="eyebrow">DEEP WORK</div>
-      <h1>Focus Room ⏱️</h1>
-      <p class="muted">Choose a session and give one task your full attention.</p>
       <div class="card">
-        <div class="row">
-          <button class="btn" onclick="setTimerMode(25,'Focus session')">Focus · 25 min</button>
-          <button class="btn alt" onclick="setTimerMode(5,'Short break')">Break · 5 min</button>
-          <button class="btn alt" onclick="setTimerMode(15,'Long break')">Long break · 15 min</button>
-        </div>
-        <div class="timer-ring" id="timerRing">
-          <div class="timer-inner">
-            <div class="timer" id="timerDisplay">25:00</div>
-            <p style="text-align:center;color:var(--muted)" id="timerMode">Focus session</p>
-          </div>
-        </div>
-        <div class="row" style="max-width:450px;margin:auto">
-          <button class="btn" id="timerStart" onclick="startTimer()">▶ Start</button>
-          <button class="btn alt" onclick="pauseTimer()">Ⅱ Pause</button>
-          <button class="btn alt" onclick="resetTimer()">↺ Reset</button>
-        </div>
-        <div class="result" id="timerStatus" aria-live="polite">Ready when you are.</div>
+        <div class="tool-icon">🎓</div>
+        <h3>Grade Calculator</h3>
+        <p class="muted">Calculate your percentage and exam results.</p>
+        <button class="btn" onclick="showPage('grades')">Calculate Grades</button>
       </div>
-      <div class="grid" style="margin-top:16px">
-        <div class="card"><h3>Today's focus time</h3><div class="stat" id="focusToday">0 min</div></div>
-        <div class="card"><h3>Completed sessions</h3><div class="stat" id="sessionsToday">0</div></div>
-      </div>
-    </section>
 
-    <section class="page" id="page-grades">
-      <div class="eyebrow">KNOW YOUR SCORE</div>
-      <h1>Grade Calculator 📊</h1>
-      <div class="grid">
-        <div class="card">
-          <h3>Score percentage</h3>
-          <label for="earned">Marks earned</label>
-          <input type="number" id="earned" min="0" placeholder="e.g. 45">
-          <label for="possible">Total possible marks</label>
-          <input type="number" id="possible" min="0.000001" placeholder="e.g. 50">
-          <button class="btn" onclick="calculateGrade()">Calculate</button>
-          <div class="result" id="gradeResult" aria-live="polite">Your result will appear here.</div>
-        </div>
-        <div class="card">
-          <h3>What score do I need?</h3>
-          <p>Calculate the marks needed to reach a target percentage.</p>
-          <label for="targetPercent">Target percentage (%)</label>
-          <input type="number" id="targetPercent" min="0" max="100" placeholder="e.g. 90">
-          <label for="targetTotal">Total possible marks</label>
-          <input type="number" id="targetTotal" min="0" placeholder="e.g. 100">
-          <button class="btn" onclick="calculateTarget()">Find required marks</button>
-          <div class="result" id="targetResult" aria-live="polite">Your target will appear here.</div>
-        </div>
-      </div>
-      <div class="card" style="margin-top:16px">
-        <h3>Percentage calculator</h3>
-        <div class="row">
-          <input id="pctValue" type="number" placeholder="Percentage (%)">
-          <input id="pctTotal" type="number" placeholder="Number">
-          <button class="btn" onclick="calculatePercent()">Calculate</button>
-        </div>
-        <div class="result" id="percentResult" aria-live="polite">Enter a percentage and a number.</div>
-      </div>
-    </section>
-
-    <section class="page" id="page-flashcards">
-      <div class="eyebrow">ACTIVE RECALL</div>
-      <h1>Flashcards 🗂️</h1>
-      <p class="muted">Make your own revision cards. Click a card to reveal its answer.</p>
       <div class="card">
-        <h3>Create a flashcard</h3>
-        <form id="flashForm">
-          <input id="flashQuestion" maxlength="300" required placeholder="Question or term">
-          <textarea id="flashAnswer" maxlength="1000" required placeholder="Answer or definition"></textarea>
-          <button class="btn" type="submit">Add flashcard</button>
-        </form>
+        <div class="tool-icon">🧮</div>
+        <h3>Calculator</h3>
+        <p class="muted">Perform everyday calculations quickly.</p>
+        <button class="btn" onclick="showPage('calculator')">Open Calculator</button>
       </div>
-      <div class="card" style="margin-top:16px">
-        <div class="row">
-          <h3>Revision deck</h3>
-          <span class="pill" id="flashCount">0 cards</span>
-        </div>
-        <div class="flashcard" id="flashDisplay" role="button" tabindex="0" onclick="flipCard()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipCard()}">
-          Your flashcards will appear here.
-          <small>Add a card to get started.</small>
-        </div>
-        <div class="row" style="margin-top:14px">
-          <button class="btn alt" onclick="previousCard()">← Previous</button>
-          <button class="btn" onclick="flipCard()">Flip card</button>
-          <button class="btn alt" onclick="nextCard()">Next →</button>
-        </div>
-        <div class="row" style="margin-top:10px">
-          <button class="btn alt" onclick="markRemembered(true)">✓ I knew it</button>
-          <button class="btn alt" onclick="markRemembered(false)">↻ Review again</button>
-          <button class="btn danger" onclick="deleteFlashcard()">Delete card</button>
-        </div>
-        <div class="result" id="flashStatus" aria-live="polite">Your progress stays on this browser.</div>
-      </div>
-    </section>
 
-    <section class="page" id="page-quiz">
-      <div class="eyebrow">TEST YOURSELF</div>
-      <h1>Quick Quiz 🧠</h1>
-      <p class="muted">Answer the questions and see your score at the end.</p>
       <div class="card">
-        <div class="row"><span class="pill" id="quizProgress">Question 1</span><span class="pill" id="quizScore">Score: 0</span></div>
-        <h2 id="quizQuestion" style="line-height:1.5;margin-top:22px">Ready to test your knowledge?</h2>
-        <div id="quizChoices"></div>
-        <div class="result hidden" id="quizFeedback" aria-live="polite"></div>
-        <div class="row" style="margin-top:15px">
-          <button class="btn" id="quizNext" onclick="nextQuestion()" disabled>Next question →</button>
-          <button class="btn alt" onclick="restartQuiz()">Restart</button>
-        </div>
+        <div class="tool-icon">📝</div>
+        <h3>Study Notes</h3>
+        <p class="muted">Write notes and download them as a text file.</p>
+        <button class="btn" onclick="showPage('notes')">Open Notes</button>
       </div>
-      <p class="muted">Sample general-knowledge questions. You can extend the question list inside the code.</p>
-    </section>
 
-    <section class="page" id="page-calculator">
-            <div class="eyebrow">QUICK MATH</div>
-      <h1>Calculator 🧮</h1>
-      <div class="card" style="max-width:550px">
-        <input type="number" id="calcA" placeholder="First number">
-        <select id="calcOp">
-          <option value="+">Addition (+)</option>
-          <option value="-">Subtraction (−)</option>
-          <option value="*">Multiplication (×)</option>
-          <option value="/">Division (÷)</option>
-          <option value="%">Remainder (%)</option>
-          <option value="pow">Power (xʸ)</option>
-        </select>
-        <input type="number" id="calcB" placeholder="Second number">
-        <button class="btn" onclick="runCalculator()">Calculate</button>
-        <div class="result" id="calcResult" aria-live="polite">Your answer will appear here.</div>
-      </div>
-    </section>
-
-    <section class="page" id="page-notes">
-      <div class="eyebrow">YOUR IDEAS, SAVED</div>
-      <h1>Quick Notes 📝</h1>
       <div class="card">
-        <p class="muted">Notes save automatically in this browser on this device.</p>
-        <textarea id="notes" style="min-height:300px" maxlength="50000" placeholder="Write revision notes, formulas, reminders..."></textarea>
-        <div class="row">
-          <span class="muted" id="noteCount">0 characters</span>
-          <button class="btn" onclick="downloadNotes()">Download .txt</button>
-          <button class="btn alt" onclick="clearNotes()">Clear notes</button>
-        </div>
-        <div class="result" id="notesStatus" aria-live="polite">Your notes are ready.</div>
+        <div class="tool-icon">🧠</div>
+        <h3>Flashcards</h3>
+        <p class="muted">Create question-and-answer cards to revise.</p>
+        <button class="btn" onclick="showPage('flashcards')">Open Flashcards</button>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="page" id="page-settings">
-      <div class="eyebrow">MAKE IT YOURS</div>
-      <h1>Settings ⚙️</h1>
-      <div class="card">
-        <h3>Your display name</h3>
-        <input id="displayName" maxlength="35" placeholder="What should we call you?">
-        <button class="btn" onclick="saveName()">Save name</button>
-        <hr>
-        <h3>Export your data</h3>
-        <p class="muted">Download a backup of tasks, flashcards, notes and your study statistics.</p>
-        <button class="btn" onclick="exportData()">Download backup</button>
-        <hr>
-        <h3>Import backup</h3>
-        <p class="muted">Import a JSON backup previously exported from this site. It replaces the saved study data on this browser.</p>
-        <input type="file" id="importFile" accept=".json,application/json">
-        <button class="btn alt" onclick="importData()">Import backup</button>
-        <hr>
-        <h3>Reset all saved data</h3>
-        <p class="muted">This removes your saved tasks, notes, cards and statistics from this browser.</p>
-        <button class="btn danger" onclick="resetAll()">Reset all data</button>
-        <div class="result" id="settingsStatus" aria-live="polite">Your settings.</div>
-      </div>
-    </section>
+  <!-- TIMER -->
+  <section id="page-timer" class="page">
+    <div class="card center">
+      <h1>Focus Timer</h1>
+      <p class="muted">Choose a duration, start the timer, and focus on one task.</p>
 
-    <footer>
-      <strong>STUDENT PRO.</strong><br>
-      Free tools. Better habits. Smarter studying.<br>
-      Your data stays in your browser. © 2026
-    </footer>
-  </main>
-</div>
+      <label for="timerMinutes">Session length in minutes</label>
+      <input id="timerMinutes" type="number" min="1" max="180" value="25">
 
-<div id="toast" class="hidden" role="status" aria-live="polite"></div>
+      <div id="timerDisplay" class="timer-display" role="timer">25:00</div>
+      <p id="timerStatus" aria-live="polite">Ready to focus?</p>
+
+      <button class="btn" id="startTimer">Start</button>
+      <button class="btn secondary" id="pauseTimer">Pause</button>
+      <button class="btn secondary" id="resetTimer">Reset</button>
+    </div>
+  </section>
+
+  <!-- PLANNER -->
+  <section id="page-planner" class="page">
+    <div class="card">
+      <h1>Study Planner</h1>
+      <p class="muted">Add your tasks and check them when completed.</p>
+
+      <form id="taskForm">
+        <label for="taskInput">New task</label>
+        <input id="taskInput" maxlength="180" placeholder="Example: Study mathematics" required>
+        <button class="btn" type="submit">Add Task</button>
+      </form>
+
+      <p id="taskProgress" class="muted">0 tasks completed</p>
+      <div id="taskList"></div>
+      <button class="btn secondary" id="clearCompleted">Clear completed tasks</button>
+    </div>
+  </section>
+
+  <!-- GRADES -->
+  <section id="page-grades" class="page">
+    <div class="card">
+      <h1>Grade Calculator</h1>
+      <p>Enter your score and the maximum possible score.</p>
+
+      <label for="gradeScore">Your score</label>
+      <input id="gradeScore" type="number" min="0" step="any" placeholder="Example: 85">
+
+      <label for="gradeTotal">Maximum score</label>
+      <input id="gradeTotal" type="number" min="0.01" step="any" placeholder="Example: 100">
+
+      <button class="btn" id="calculateGrade">Calculate</button>
+      <div id="gradeResult" class="result" aria-live="polite"></div>
+    </div>
+
+    <div class="card">
+      <h2>Target Score Calculator</h2>
+      <label for="targetPercent">Target percentage (%)</label>
+      <input id="targetPercent" type="number" min="0" max="100" step="any" value="90">
+
+      <label for="targetTotal">Maximum exam score</label>
+      <input id="targetTotal" type="number" min="0.01" step="any" value="100">
+
+      <button class="btn" id="calculateTarget">Calculate target score</button>
+      <div id="targetResult" class="result" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- CALCULATOR -->
+  <section id="page-calculator" class="page">
+    <div class="card">
+      <h1>Basic Calculator</h1>
+      <label for="calcA">First number</label>
+      <input id="calcA" type="number" step="any" placeholder="First number">
+
+      <label for="calcOperation">Operation</label>
+      <select id="calcOperation">
+        <option value="+">Addition (+)</option>
+        <option value="-">Subtraction (-)</option>
+        <option value="*">Multiplication (×)</option>
+        <option value="/">Division (÷)</option>
+      </select>
+
+      <label for="calcB">Second number</label>
+      <input id="calcB" type="number" step="any" placeholder="Second number">
+
+      <button class="btn" id="calculateNumbers">Calculate</button>
+      <div id="calcResult" class="result" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- NOTES -->
+  <section id="page-notes" class="page">
+    <div class="card">
+      <h1>Study Notes</h1>
+      <p class="muted">Your notes are saved in this browser on this device.</p>
+
+      <label for="notesTitle">Note title</label>
+      <input id="notesTitle" maxlength="100" placeholder="My study notes">
+
+      <label for="notesText">Your notes</label>
+      <textarea id="notesText" placeholder="Write your notes here..."></textarea>
+      <p id="noteCount" class="muted small">0 characters</p>
+
+      <button class="btn" id="downloadNotes">Download Notes</button>
+      <button class="btn secondary" id="clearNotes">Clear Notes</button>
+      <p id="notesStatus" class="muted" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- FLASHCARDS -->
+  <section id="page-flashcards" class="page">
+    <div class="card">
+      <h1>Flashcards</h1>
+      <p class="muted">Add a question and answer, then test yourself.</p>
+
+      <form id="flashcardForm">
+        <label for="flashQuestion">Question</label>
+        <input id="flashQuestion" maxlength="250" placeholder="What do you want to remember?" required>
+
+        <label for="flashAnswer">Answer</label>
+        <textarea id="flashAnswer" maxlength="1000" placeholder="Write the answer..." required></textarea>
+
+        <button class="btn" type="submit">Add Flashcard</button>
+      </form>
+    </div>
+
+    <div class="card center">
+      <h2>Your Flashcards</h2>
+      <p id="flashCount" class="muted">0 cards</p>
+      <div id="flashQuestionView">No flashcards yet.</div>
+      <div id="flashAnswerView" hidden></div>
+
+      <button class="btn" id="showAnswer" hidden>Show Answer</button>
+      <button class="btn secondary" id="nextFlashcard" hidden>Next Card</button>
+      <button class="btn danger" id="deleteFlashcard" hidden>Delete Card</button>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="page-about" class="page">
+    <div class="card">
+      <h1>About Student Tool</h1>
+      <p>Welcome to Student Tool, a website designed to make studying easier and more organized.</p>
+      <p>Our goal is to provide students with simple, free tools that help with daily study activities.</p>
+
+      <h2>What you can do here</h2>
+      <ul>
+        <li>Use a focus timer for study sessions.</li>
+        <li>Organize assignments and study tasks.</li>
+        <li>Calculate grades and percentages.</li>
+        <li>Use a basic calculator.</li>
+        <li>Write and download study notes.</li>
+        <li>Create flashcards for revision.</li>
+      </ul>
+
+      <p>We aim to keep the website simple, useful, and accessible. We welcome suggestions that can improve the experience for students.</p>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="page-contact" class="page">
+    <div class="card">
+      <h1>Contact Us</h1>
+      <p>If you have a question, notice a problem, or want to suggest a new tool, you can contact the website owner by email.</p>
+
+      <!-- Replace this address with an email you actually control -->
+      <p>Email: <a href="mailto:REPLACE_WITH_YOUR_EMAIL">REPLACE_WITH_YOUR_EMAIL</a></p>
+
+      <p>Please replace the placeholder above with your real contact email before publishing this page.</p>
+    </div>
+  </section>
+
+  <!-- PRIVACY POLICY -->
+  <section id="page-privacy" class="page">
+    <div class="card">
+      <h1>Privacy Policy</h1>
+      <p><strong>Last updated: October 9, 2026</strong></p>
+
+      <h2>Introduction</h2>
+      <p>This Privacy Policy explains how Student Tool handles information when you use this website.</p>
+
+      <h2>Information stored on your device</h2>
+      <p>Some tools may store tasks, notes, or flashcards in your browser using local storage. This helps the tools remember your work on the same device. Clearing your browser data may remove this information.</p>
+
+      <h2>Google Analytics</h2>
+      <p>This website uses Google Analytics to understand website traffic and how visitors use the website. Google Analytics may use cookies or similar technologies to collect usage information. The information helps us understand and improve the website.</p>
+      <p>For more information, review Google's policies at <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google Privacy Policy</a>.</p>
+
+      <h2>Cookies and advertising</h2>
+      <p>This website may use cookies or similar technologies for analytics and, if advertising is added in the future, for advertising purposes. Third-party providers may use these technologies according to their own policies.</p>
+      <p>If Google AdSense is added, this policy should be reviewed and updated to accurately describe the advertising technologies used and the choices available to visitors.</p>
+
+      <h2>Children's privacy</h2>
+      <p>This website is intended to provide general study tools. We do not intentionally ask visitors to submit sensitive personal information through the tools.</p>
+
+      <h2>Changes to this policy</h2>
+      <p>This policy may be updated as the website changes. Updates will be published on this page.</p>
+
+      <h2>Contact</h2>
+      <p>For privacy questions, contact the website owner using the email listed on the Contact Us page.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>© <span id="year"></span> Student Tool. All rights reserved.</p>
+  <p>
+    <a href="#about" onclick="showPage('about')">About Us</a>
+    <a href="#contact" onclick="showPage('contact')">Contact Us</a>
+    <a href="#privacy" onclick="showPage('privacy')">Privacy Policy</a>
+  </p>
+  <p class="small">Free study tools to help you learn and stay organized.</p>
+</footer>
 
 <script>
-"use strict";
-
-const KEY = "studentProDataV2";
-const TODAY = () => new Date().toLocaleDateString("en-CA");
-
-function defaultData(){
-  return {
-    name:"",
-    theme:"dark",
-    tasks:[],
-    cards:[],
-    notes:"",
-    focus:{date:TODAY(),minutes:0,sessions:0}
-  };
-}
-
-function loadData(){
-  try{
-    const raw=localStorage.getItem(KEY);
-    if(!raw) return defaultData();
-    const parsed=JSON.parse(raw);
-    const base=defaultData();
-    return {
-      ...base,...parsed,
-      tasks:Array.isArray(parsed.tasks)?parsed.tasks:[],
-      cards:Array.isArray(parsed.cards)?parsed.cards:[],
-      focus:parsed.focus && parsed.focus.date===TODAY()
-        ? parsed.focus : base.focus
-    };
-  }catch(e){return defaultData();}
-}
-
-let data=loadData();
-let toastTimer=null;
-
-function persist(){
-  try{
-    localStorage.setItem(KEY,JSON.stringify(data));
-    return true;
-  }catch(e){
-    notify("Storage is full or unavailable. Export your data and free some space.");
-    return false;
-  }
-}
-
-function notify(message){
-  const el=document.getElementById("toast");
-  el.textContent=message;
-  el.classList.remove("hidden");
-  clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>el.classList.add("hidden"),2600);
-}
-
-function el(id){return document.getElementById(id);}
-function safeText(value){return String(value??"");}
-
-function navigate(page){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
-  const target=el("page-"+page);
-  if(target) target.classList.add("active");
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-
-function toggleTheme(){
-  data.theme=data.theme==="dark"?"light":"dark";
-  applyTheme();
-  persist();
-}
-
-function applyTheme(){
-  document.body.classList.toggle("light",data.theme==="light");
-  el("themeBtn").textContent=data.theme==="light"?"🌙":"☀️";
-}
-
-function saveName(){
-  data.name=el("displayName").value.trim().slice(0,35);
-  persist();
-  updateGreeting();
-  el("settingsStatus").textContent="Name saved.";
-}
-
-function updateGreeting(){
-  const hour=new Date().getHours();
-  const time=hour<12?"Good morning":hour<18?"Good afternoon":"Good evening";
-  el("greeting").textContent=(data.name?time+", "+data.name: "Ready to level up?")+" 🚀";
-}
-
-function renderDashboard(){
-  const total=data.tasks.length;
-  const done=data.tasks.filter(t=>t.done).length;
-  const pct=total?Math.round(done/total*100):0;
-  el("statTasks").textContent=done+"/"+total;
-  el("statMinutes").textContent=data.focus.minutes;
-  el("statStreak").textContent=data.focus.sessions;
-  el("statCards").textContent=data.cards.length;
-  el("progressNumber").textContent=pct+"%";
-  el("progressBar").style.width=pct+"%";
-  el("progressText").textContent=total?done+" of "+total+" tasks completed":"Add a task to start tracking your progress.";
-  el("focusToday").textContent=data.focus.minutes+" min";
-  el("sessionsToday").textContent=data.focus.sessions;
-  el("flashCount").textContent=data.cards.length+" cards";
-}
-
-function renderTasks(){
-  const list=el("taskList");
-  list.replaceChildren();
-  const filter=el("taskFilter").value;
-  let tasks=data.tasks.map((t,i)=>({...t,index:i}));
-  if(filter==="active") tasks=tasks.filter(t=>!t.done);
-  if(filter==="done") tasks=tasks.filter(t=>t.done);
-  tasks.sort((a,b)=>Number(a.done)-Number(b.done) ||
-    Number(b.priority==="high")-Number(a.priority==="high") ||
-    String(a.due||"9999").localeCompare(String(b.due||"9999")));
-
-  if(!tasks.length){
-    const empty=document.createElement("div");
-    empty.className="empty";
-    empty.textContent="No tasks here yet. Add one above!";
-    list.appendChild(empty);
-  }
-
-  tasks.forEach(task=>{
-    const row=document.createElement("div");
-    row.className="task"+(task.done?" done":"");
-
-    const checkbox=document.createElement("input");
-    checkbox.type="checkbox";
-    checkbox.checked=task.done;
-    checkbox.setAttribute("aria-label","Complete "+task.title);
-    checkbox.addEventListener("change",()=>{
-      data.tasks[task.index].done=checkbox.checked;
-      persist();
-      renderTasks();
-      renderDashboard();
+  // Simple page navigation
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(function(page) {
+      page.classList.remove('active');
     });
 
-    const info=document.createElement("div");
-    info.className="task-name";
+    const target = document.getElementById('page-' + name);
+    if (!target) return;
 
-    const title=document.createElement("div");
-    title.textContent=task.title;
-    info.appendChild(title);
+    target.classList.add('active');
 
-    const meta=document.createElement("div");
-    meta.className="task-meta";
-    meta.textContent=[task.subject,task.due?"Due: "+task.due:""].filter(Boolean).join(" · ");
-    info.appendChild(meta);
-
-    const priority=document.createElement("span");
-    priority.className="pill "+(task.priority==="high"?"priority-high":"priority-normal");
-    priority.textContent=task.priority==="high"?"High":"Normal";
-
-    const remove=document.createElement("button");
-    remove.className="btn danger small";
-    remove.textContent="✕";
-    remove.setAttribute("aria-label","Delete "+task.title);
-    remove.addEventListener("click",()=>{
-      data.tasks.splice(task.index,1);
-      persist();
-      renderTasks();
-      renderDashboard();
-      notify("Task deleted.");
+    document.querySelectorAll('nav button').forEach(function(button) {
+      button.classList.toggle('active', button.dataset.page === name);
     });
 
-    row.append(checkbox,info,priority,remove);
-    list.appendChild(row);
-  });
-}
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
-el("taskForm").addEventListener("submit",event=>{
-  event.preventDefault();
-  const title=el("taskName").value.trim();
-  if(!title) return;
+  // Show a page when opening a supported URL hash
+  window.addEventListener('load', function() {
+    const hash = window.location.hash.replace('#', '');
+    const allowedPages = [
+      'home', 'timer', 'planner', 'grades', 'calculator',
+      'notes', 'flashcards', 'about', 'contact', 'privacy'
+    ];
 
-  data.tasks.push({
-    title,
-    subject:el("taskSubject").value.trim(),
-    due:el("taskDate").value,
-    priority:el("taskPriority").value,
-    done:false,
-    createdAt:Date.now()
+    if (allowedPages.includes(hash)) showPage(hash);
   });
 
-  persist();
-  el("taskForm").reset();
-  renderTasks();
-  renderDashboard();
-  notify("Task added!");
-});
+  // Footer year
+  document.getElementById('year').textContent = new Date().getFullYear();
 
-el("taskFilter").addEventListener("change",renderTasks);
+  // Timer: use a fixed end time so the countdown does not reset on every tick
+  let timerInterval = null;
+  let timerEndAt = 0;
+  let remainingSeconds = 25 * 60;
 
-function clearCompleted(){
-  const before=data.tasks.length;
-  data.tasks=data.tasks.filter(task=>!task.done);
-  persist();
-  renderTasks();
-  renderDashboard();
-  notify((before-data.tasks.length)+" completed task(s) cleared.");
-}
+  const timerDisplay = document.getElementById('timerDisplay');
+  const timerStatus = document.getElementById('timerStatus');
+  const timerMinutes = document.getElementById('timerMinutes');
 
-function calculateGrade(){
-  const earned=Number(el("earned").value);
-  const possible=Number(el("possible").value);
-
-  if(el("earned").value===""||el("possible").value===""||
-     !Number.isFinite(earned)||!Number.isFinite(possible)||
-     earned<0||possible<=0||earned>possible){
-    el("gradeResult").textContent="Enter valid marks. Earned marks must be between 0 and the total.";
-    return;
+  function drawTimer() {
+    const minutes = Math.floor(remainingSeconds / 60);
+    const seconds = remainingSeconds % 60;
+    timerDisplay.textContent =
+      String(minutes).padStart(2, '0') + ':' +
+      String(seconds).padStart(2, '0');
   }
 
-  const pct=earned/possible*100;
-  el("gradeResult").textContent="Your score: "+pct.toFixed(2)+"%";
-}
-
-function calculateTarget(){
-  const pct=Number(el("targetPercent").value);
-  const total=Number(el("targetTotal").value);
-
-  if(el("targetPercent").value===""||el("targetTotal").value===""||
-     !Number.isFinite(pct)||!Number.isFinite(total)||
-     pct<0||pct>100||total<=0){
-    el("targetResult").textContent="Enter a target from 0 to 100 and a total greater than zero.";
-    return;
+  function stopTimerInterval() {
+    if (timerInterval !== null) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
   }
 
-  el("targetResult").textContent="You need "+(pct/100*total).toFixed(2)+" marks out of "+total+".";
-}
-
-function calculatePercent(){
-  const pct=Number(el("pctValue").value);
-  const total=Number(el("pctTotal").value);
-
-  if(el("pctValue").value===""||el("pctTotal").value===""||
-     !Number.isFinite(pct)||!Number.isFinite(total)){
-    el("percentResult").textContent="Enter both numbers.";
-    return;
-  }
-
-  el("percentResult").textContent=pct+"% of "+total+" = "+(pct/100*total).toFixed(2);
-}
-
-function runCalculator(){
-  const aText=el("calcA").value;
-  const bText=el("calcB").value;
-  const a=Number(aText);
-  const b=Number(bText);
-  const op=el("calcOp").value;
-
-  if(aText===""||bText===""||!Number.isFinite(a)||!Number.isFinite(b)){
-    el("calcResult").textContent="Enter two valid numbers.";
-    return;
-  }
-
-  let result;
-  switch(op){
-    case "+": result=a+b; break;
-    case "-": result=a-b; break;
-    case "*": result=a*b; break;
-    case "/":
-      if(b===0){el("calcResult").textContent="Cannot divide by zero.";return;}
-      result=a/b;
-      break;
-    case "%":
-      if(b===0){el("calcResult").textContent="Cannot use zero as the divisor.";return;}
-      result=a%b;
-      break;
-    case "pow": result=Math.pow(a,b); break;
-    default:
-      el("calcResult").textContent="Choose an operation.";
-      return;
-  }
-
-  el("calcResult").textContent=Number.isFinite(result)
-    ?"Answer: "+Number(result.toPrecision(10))
-    :"The result is too large to display.";
-}
-
-el("notes").value=data.notes||"";
-
-function updateNoteCount(){
-  el("noteCount").textContent=el("notes").value.length+" characters";
-}
-
-el("notes").addEventListener("input",()=>{
-  data.notes=el("notes").value;
-  persist();
-  updateNoteCount();
-  el("notesStatus").textContent="Saved automatically.";
-});
-
-function downloadFile(filename,content,type){
-  const blob=new Blob([content],{type});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement("a");
-  a.href=url;
-  a.download=filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),1000);
-}
-
-function downloadNotes(){
-  downloadFile("student-notes.txt",el("notes").value,"text/plain;charset=utf-8");
-  el("notesStatus").textContent="Notes download started.";
-}
-
-function clearNotes(){
-  if(!confirm("Clear all your notes?")) return;
-  el("notes").value="";
-  data.notes="";
-  persist();
-  updateNoteCount();
-  el("notesStatus").textContent="Notes cleared.";
-}
-  let timerSeconds = 25 * 60;
-let timerInitial = 25 * 60;
-let timerInterval = null;
-let timerLabel = "Focus session";
-let timerEndAt = 0;
-
-function drawTimer() {
-  const min = Math.floor(timerSeconds / 60);
-  const sec = timerSeconds % 60;
-
-  el("timerDisplay").textContent =
-    String(min).padStart(2, "0") + ":" +
-    String(sec).padStart(2, "0");
-
-  const pct = timerInitial
-    ? (timerSeconds / timerInitial) * 100
-    : 0;
-
-  el("timerRing").style.setProperty("--pct", pct + "%");
-  el("timerMode").textContent = timerLabel;
-}
-
-function setTimerMode(minutes, label) {
-  pauseTimer();
-  timerLabel = label;
-  timerInitial = minutes * 60;
-  timerSeconds = timerInitial;
-
-  drawTimer();
-  el("timerStart").disabled = false;
-  el("timerStatus").textContent =
-    "Ready for " + label.toLowerCase() + ".";
-}
-
-function startTimer() {
-  if (timerInterval !== null) return;
-
-  if (timerSeconds <= 0) {
-    notify("Choose a timer mode or reset the timer first.");
-    return;
-  }
-
-  // تحديد وقت النهاية مرة واحدة يمنع مشكلة إعادة ضبط العد التنازلي.
-  timerEndAt = Date.now() + timerSeconds * 1000;
-
-  el("timerStart").disabled = true;
-  el("timerStatus").textContent = "Timer running. Stay focused!";
-
-  timerInterval = setInterval(() => {
-    timerSeconds = Math.max(
+  function timerTick() {
+    remainingSeconds = Math.max(
       0,
       Math.ceil((timerEndAt - Date.now()) / 1000)
     );
 
     drawTimer();
 
-    if (timerSeconds <= 0) {
-      finishTimer();
+    if (remainingSeconds <= 0) {
+      stopTimerInterval();
+      timerEndAt = 0;
+      timerStatus.textContent = 'Session complete! Great job 🎉';
+      alert('Your focus session is complete!');
     }
-  }, 200);
-}
-
-function pauseTimer() {
-  if (timerInterval !== null) {
-    timerSeconds = Math.max(
-      0,
-      Math.ceil((timerEndAt - Date.now()) / 1000)
-    );
-
-    clearInterval(timerInterval);
-    timerInterval = null;
-
-    drawTimer();
-    el("timerStart").disabled = false;
-    el("timerStatus").textContent = "Timer paused.";
-  }
-}
-
-function finishTimer() {
-  if (timerInterval !== null) {
-    clearInterval(timerInterval);
-    timerInterval = null;
   }
 
-  timerSeconds = 0;
-  drawTimer();
-
-  el("timerStart").disabled = false;
-
-  if (timerLabel === "Focus session") {
-    data.focus.minutes += Math.round(timerInitial / 60);
-    data.focus.sessions++;
-
-    persist();
-    renderDashboard();
-  }
-
-  el("timerStatus").textContent =
-    timerLabel + " complete! Great work!";
-
-  notify(timerLabel + " complete!");
-}
-
-function resetTimer() {
-  pauseTimer();
-
-  timerSeconds = timerInitial;
-  drawTimer();
-
-  el("timerStart").disabled = false;
-  el("timerStatus").textContent = "Timer reset.";
-}
-
-// ---------------- FLASHCARDS ----------------
-
-let flashIndex = 0;
-let showingAnswer = false;
-
-el("flashForm").addEventListener("submit", event => {
-  event.preventDefault();
-
-  const question = el("flashQuestion").value.trim();
-  const answer = el("flashAnswer").value.trim();
-
-  if (!question || !answer) {
-    notify("Enter both a question and an answer.");
-    return;
-  }
-
-  data.cards.push({
-    question: question.slice(0, 300),
-    answer: answer.slice(0, 1000),
-    remembered: 0,
-    reviewed: 0
-  });
-
-  flashIndex = data.cards.length - 1;
-  showingAnswer = false;
-
-  persist();
-  el("flashForm").reset();
-
-  renderFlashcard();
-  renderDashboard();
-  notify("Flashcard added!");
-});
-
-function renderFlashcard() {
-  el("flashCount").textContent = data.cards.length + " cards";
-
-  const card = data.cards[flashIndex];
-  const box = el("flashDisplay");
-
-  box.replaceChildren();
-
-  if (!card) {
-    box.textContent = "Your flashcards will appear here.";
-
-    const small = document.createElement("small");
-    small.textContent = "Add a card to get started.";
-    box.appendChild(small);
-
-    el("flashStatus").textContent =
-      "Create a question and answer above.";
-
-    return;
-  }
-
-  const content = document.createElement("div");
-  content.textContent = showingAnswer
-    ? card.answer
-    : card.question;
-
-  box.appendChild(content);
-
-  const small = document.createElement("small");
-  small.textContent =
-    (showingAnswer ? "ANSWER" : "QUESTION") +
-    " · " + (flashIndex + 1) +
-    " / " + data.cards.length +
-    " · Click to flip";
-
-  box.appendChild(small);
-
-  el("flashStatus").textContent =
-    "Remembered: " + (card.remembered || 0) +
-    " · Reviewed: " + (card.reviewed || 0);
-}
-
-function flipCard() {
-  if (!data.cards.length) return;
-
-  showingAnswer = !showingAnswer;
-  renderFlashcard();
-}
-
-function nextCard() {
-  if (!data.cards.length) return;
-
-  flashIndex = (flashIndex + 1) % data.cards.length;
-  showingAnswer = false;
-
-  renderFlashcard();
-}
-
-function previousCard() {
-  if (!data.cards.length) return;
-
-  flashIndex =
-    (flashIndex - 1 + data.cards.length) % data.cards.length;
-
-  showingAnswer = false;
-  renderFlashcard();
-}
-
-function markRemembered(remembered) {
-  const card = data.cards[flashIndex];
-
-  if (!card) return;
-
-  card.reviewed = (card.reviewed || 0) + 1;
-
-  if (remembered) {
-    card.remembered = (card.remembered || 0) + 1;
-  }
-
-  persist();
-  renderFlashcard();
-
-  notify(
-    remembered
-      ? "Great! Marked as remembered."
-      : "Added to your review count."
-  );
-}
-
-function deleteFlashcard() {
-  if (!data.cards.length) return;
-
-  if (!confirm("Delete this flashcard?")) return;
-
-  data.cards.splice(flashIndex, 1);
-
-  flashIndex = Math.max(
-    0,
-    Math.min(flashIndex, data.cards.length - 1)
-  );
-
-  showingAnswer = false;
-
-  persist();
-  renderFlashcard();
-  renderDashboard();
-
-  notify("Flashcard deleted.");
-}
-
-// ---------------- QUICK QUIZ ----------------
-
-const questions = [
-  {
-    q: "Which planet is known as the Red Planet?",
-    a: ["Venus", "Mars", "Jupiter", "Mercury"],
-    correct: 1
-  },
-  {
-    q: "What is the chemical symbol for oxygen?",
-    a: ["Ox", "O", "Og", "Om"],
-    correct: 1
-  },
-  {
-    q: "What is 12 × 8?",
-    a: ["86", "92", "96", "108"],
-    correct: 2
-  },
-  {
-    q: "Which gas do plants absorb during photosynthesis?",
-    a: ["Oxygen", "Nitrogen", "Hydrogen", "Carbon dioxide"],
-    correct: 3
-  },
-  {
-    q: "What is the largest ocean on Earth?",
-    a: ["Atlantic", "Indian", "Pacific", "Arctic"],
-    correct: 2
-  },
-  {
-    q: "How many sides does a hexagon have?",
-    a: ["Five", "Six", "Seven", "Eight"],
-    correct: 1
-  },
-  {
-    q: "What is the approximate value of pi?",
-    a: ["2.14", "3.14", "4.13", "3.41"],
-    correct: 1
-  },
-  {
-    q: "Which organ pumps blood around the body?",
-    a: ["Lungs", "Brain", "Heart", "Liver"],
-    correct: 2
-  },
-  {
-    q: "At sea level, water boils at what temperature in Celsius?",
-    a: ["50°C", "90°C", "100°C", "120°C"],
-    correct: 2
-  },
-  {
-    q: "What is the opposite of evaporation?",
-    a: ["Melting", "Condensation", "Sublimation", "Freezing"],
-    correct: 1
-  }
-];
-
-let quizOrder = [];
-let quizIndex = 0;
-let quizPoints = 0;
-let quizAnswered = false;
-let quizFinished = false;
-
-function restartQuiz() {
-  quizOrder = questions.map((_, i) => i);
-
-  for (let i = quizOrder.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [quizOrder[i], quizOrder[j]] =
-      [quizOrder[j], quizOrder[i]];
-  }
-
-  quizIndex = 0;
-  quizPoints = 0;
-  quizAnswered = false;
-  quizFinished = false;
-
-  renderQuestion();
-}
-
-function renderQuestion() {
-  el("quizFeedback").classList.add("hidden");
-  el("quizChoices").replaceChildren();
-  el("quizNext").disabled = true;
-  el("quizNext").textContent = "Next question →";
-  el("quizScore").textContent = "Score: " + quizPoints;
-
-  if (quizIndex >= quizOrder.length) {
-    quizFinished = true;
-
-    el("quizProgress").textContent = "Complete";
-    el("quizQuestion").textContent = "Quiz complete! 🎉";
-
-    el("quizChoices").textContent =
-      "You scored " + quizPoints +
-      " out of " + quizOrder.length + ".";
-
-    el("quizNext").textContent = "Try again";
-    el("quizNext").disabled = false;
-
-    return;
-  }
-
-  const q = questions[quizOrder[quizIndex]];
-
-  el("quizProgress").textContent =
-    "Question " + (quizIndex + 1) +
-    " of " + quizOrder.length;
-
-  el("quizQuestion").textContent = q.q;
-
-  q.a.forEach((answer, index) => {
-    const btn = document.createElement("button");
-
-    btn.className = "choice";
-    btn.textContent =
-      String.fromCharCode(65 + index) + ". " + answer;
-
-    btn.addEventListener("click", () => {
-      answerQuestion(index, btn);
-    });
-
-    el("quizChoices").appendChild(btn);
-  });
-}
-
-function answerQuestion(index, button) {
-  if (quizAnswered || quizFinished) return;
-
-  quizAnswered = true;
-
-  const q = questions[quizOrder[quizIndex]];
-  const choices = el("quizChoices").querySelectorAll("button");
-
-  choices.forEach((btn, i) => {
-    btn.disabled = true;
-
-    if (i === q.correct) {
-      btn.classList.add("correct");
-    }
-  });
-
-  const feedback = el("quizFeedback");
-  feedback.classList.remove("hidden");
-
-  if (index === q.correct) {
-    quizPoints++;
-    feedback.textContent = "Correct! Great job. ✓";
-  } else {
-    button.classList.add("wrong");
-    feedback.textContent =
-      "Not quite. The correct answer is " +
-      q.a[q.correct] + ".";
-  }
-
-  el("quizScore").textContent = "Score: " + quizPoints;
-
-  el("quizNext").disabled = false;
-  el("quizNext").textContent =
-    quizIndex === quizOrder.length - 1
-      ? "See results"
-      : "Next question →";
-}
-
-function nextQuestion() {
-  if (quizFinished) {
-    restartQuiz();
-    return;
-  }
-
-  if (!quizAnswered) return;
-
-  quizIndex++;
-  quizAnswered = false;
-
-  renderQuestion();
-}
-
-// ---------------- BACKUP & SETTINGS ----------------
-
-function exportData() {
-  downloadFile(
-    "student-pro-backup.json",
-    JSON.stringify(data, null, 2),
-    "application/json"
-  );
-
-  el("settingsStatus").textContent = "Backup downloaded.";
-}
-
-function importData() {
-  const file = el("importFile").files[0];
-
-  if (!file) {
-    el("settingsStatus").textContent =
-      "Choose a JSON backup first.";
-    return;
-  }
-
-  const reader = new FileReader();
-
-  reader.onload = () => {
-    try {
-      const incoming = JSON.parse(reader.result);
-
-      if (
-        !incoming ||
-        typeof incoming !== "object" ||
-        !Array.isArray(incoming.tasks) ||
-        !Array.isArray(incoming.cards) ||
-        typeof incoming.notes !== "string" ||
-        (incoming.theme !== "dark" && incoming.theme !== "light")
-      ) {
-        throw new Error("Invalid backup");
+  document.getElementById('startTimer').addEventListener('click', function() {
+    if (timerInterval !== null) return;
+
+    if (remainingSeconds <= 0) {
+      const minutes = Number(timerMinutes.value);
+      if (!Number.isFinite(minutes) || minutes < 1 || minutes > 180) {
+        timerStatus.textContent = 'Enter a duration between 1 and 180 minutes.';
+        return;
       }
-
-      if (!confirm(
-        "Replace your current saved data with this backup?"
-      )) return;
-
-      const base = defaultData();
-
-      data = {
-        ...base,
-        ...incoming,
-        tasks: incoming.tasks,
-        cards: incoming.cards,
-        notes: incoming.notes,
-        focus:
-          incoming.focus && incoming.focus.date === TODAY()
-            ? incoming.focus
-            : base.focus
-      };
-
-      if (!persist()) return;
-
-      initializeUI();
-
-      el("settingsStatus").textContent =
-        "Backup imported successfully.";
-
-      notify("Backup imported!");
-    } catch (error) {
-      el("settingsStatus").textContent =
-        "Invalid backup file. Nothing was imported.";
+      remainingSeconds = Math.round(minutes * 60);
     }
-  };
 
-  reader.readAsText(file);
-}
+    timerEndAt = Date.now() + remainingSeconds * 1000;
+    timerStatus.textContent = 'Focus time. You can do it!';
 
-function resetAll() {
-  if (!confirm(
-    "This permanently clears all Student Pro data stored in this browser. Continue?"
-  )) return;
+    timerInterval = setInterval(timerTick, 250);
+    timerTick();
+  });
 
-  pauseTimer();
+  document.getElementById('pauseTimer').addEventListener('click', function() {
+    if (timerInterval !== null) {
+      remainingSeconds = Math.max(
+        0,
+        Math.ceil((timerEndAt - Date.now()) / 1000)
+      );
+    }
+    stopTimerInterval();
+    timerEndAt = 0;
+    drawTimer();
+    timerStatus.textContent = 'Timer paused.';
+  });
 
-  data = defaultData();
+  document.getElementById('resetTimer').addEventListener('click', function() {
+    stopTimerInterval();
+    timerEndAt = 0;
 
-  try {
-    localStorage.removeItem(KEY);
-  } catch (error) {
-    // Continue resetting the current page.
+    const minutes = Number(timerMinutes.value);
+    if (!Number.isFinite(minutes) || minutes < 1 || minutes > 180) {
+      timerStatus.textContent = 'Enter a duration between 1 and 180 minutes.';
+      return;
+    }
+
+    remainingSeconds = Math.round(minutes * 60);
+    drawTimer();
+    timerStatus.textContent = 'Ready to focus?';
+  });
+
+  timerMinutes.addEventListener('change', function() {
+    if (timerInterval !== null) return;
+
+    const minutes = Number(timerMinutes.value);
+    if (Number.isFinite(minutes) && minutes >= 1 && minutes <= 180) {
+      remainingSeconds = Math.round(minutes * 60);
+      drawTimer();
+      timerStatus.textContent = 'Ready to focus?';
+    }
+  });
+
+  drawTimer();
+
+  // Planner
+  const STORAGE_KEY = 'studentToolCompleteData';
+
+  function loadData() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      return {
+        tasks: Array.isArray(saved.tasks) ? saved.tasks : [],
+        notesTitle: typeof saved.notesTitle === 'string' ? saved.notesTitle : '',
+        notesText: typeof saved.notesText === 'string' ? saved.notesText : '',
+        flashcards: Array.isArray(saved.flashcards) ? saved.flashcards : []
+      };
+    } catch (error) {
+      return { tasks: [], notesTitle: '', notesText: '', flashcards: [] };
+    }
   }
 
-  timerLabel = "Focus session";
-  timerInitial = 25 * 60;
-  timerSeconds = timerInitial;
+  let data = loadData();
 
-  initializeUI();
+  function saveData() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch (error) {
+      alert('Your browser could not save this data. Check browser storage settings.');
+    }
+  }
 
-  el("settingsStatus").textContent =
-    "All saved data has been reset.";
+  function renderTasks() {
+    const list = document.getElementById('taskList');
+    list.replaceChildren();
 
-  drawTimer();
-  notify("Data reset.");
-}
+    const completed = data.tasks.filter(function(task) {
+      return task.done;
+    }).length;
 
-// ---------------- INITIALIZE WEBSITE ----------------
+    document.getElementById('taskProgress').textContent =
+      completed + ' of ' + data.tasks.length + ' tasks completed';
 
-function initializeUI() {
-  applyTheme();
-  updateGreeting();
+    data.tasks.forEach(function(task, index) {
+      const row = document.createElement('div');
+      row.className = 'task-row' + (task.done ? ' done' : '');
 
-  el("displayName").value = data.name || "";
-  el("notes").value = data.notes || "";
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.checked = task.done;
+      checkbox.setAttribute('aria-label', 'Mark task completed');
 
-  updateNoteCount();
-  renderTasks();
-  renderFlashcard();
-  renderDashboard();
-  drawTimer();
+      checkbox.addEventListener('change', function() {
+        data.tasks[index].done = checkbox.checked;
+        saveData();
+        renderTasks();
+      });
 
-  el("dateLabel").textContent =
-    new Date().toLocaleDateString(undefined, {
-      month: "short",
-      day: "numeric"
+      const text = document.createElement('span');
+      text.className = 'task-text';
+      text.textContent = task.text;
+
+      const remove = document.createElement('button');
+      remove.className = 'btn danger';
+      remove.type = 'button';
+      remove.textContent = 'Delete';
+      remove.addEventListener('click', function() {
+        data.tasks.splice(index, 1);
+        saveData();
+        renderTasks();
+      });
+
+      row.append(checkbox, text, remove);
+      list.appendChild(row);
     });
-}
+  }
 
-initializeUI();
-restartQuiz();
+  document.getElementById('taskForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const input = document.getElementById('taskInput');
+    const text = input.value.trim();
 
+    if (!text) return;
+
+    data.tasks.push({ text: text, done: false });
+    input.value = '';
+    saveData();
+    renderTasks();
+  });
+
+  document.getElementById('clearCompleted').addEventListener('click', function() {
+    data.tasks = data.tasks.filter(function(task) {
+      return !task.done;
+    });
+    saveData();
+    renderTasks();
+  });
+
+  renderTasks();
+
+  // Grade calculator
+  document.getElementById('calculateGrade').addEventListener('click', function() {
+    const score = Number(document.getElementById('gradeScore').value);
+    const total = Number(document.getElementById('gradeTotal').value);
+    const result = document.getElementById('gradeResult');
+
+    if (
+      document.getElementById('gradeScore').value === '' ||
+      document.getElementById('gradeTotal').value === '' ||
+      !Number.isFinite(score) || !Number.isFinite(total) ||
+      total <= 0 || score < 0 || score > total
+    ) {
+      result.textContent = 'Enter a valid score between 0 and the maximum score.';
+      return;
+    }
+
+    result.textContent = 'Your percentage: ' + (score / total * 100).toFixed(2) + '%';
+  });
+
+  document.getElementById('calculateTarget').addEventListener('click', function() {
+    const percent = Number(document.getElementById('targetPercent').value);
+    const total = Number(document.getElementById('targetTotal').value);
+    const result = document.getElementById('targetResult');
+
+    if (
+      document.getElementById('targetPercent').value === '' ||
+      document.getElementById('targetTotal').value === '' ||
+      !Number.isFinite(percent) || !Number.isFinite(total) ||
+      percent < 0 || percent > 100 || total <= 0
+    ) {
+      result.textContent = 'Enter a target from 0 to 100 and a positive maximum score.';
+      return;
+    }
+
+    result.textContent = 'You need ' + (percent / 100 * total).toFixed(2) +
+      ' out of ' + total + ' points.';
+  });
+
+  // Basic calculator
+  document.getElementById('calculateNumbers').addEventListener('click', function() {
+    const firstValue = document.getElementById('calcA').value;
+    const secondValue = document.getElementById('calcB').value;
+    const a = Number(firstValue);
+    const b = Number(secondValue);
+    const operation = document.getElementById('calcOperation').value;
+    const result = document.getElementById('calcResult');
+
+    if (
+      firstValue === '' || secondValue === '' ||
+      !Number.isFinite(a) || !Number.isFinite(b)
+    ) {
+      result.textContent = 'Enter two valid numbers.';
+      return;
+    }
+
+    let answer;
+
+    if (operation === '+') answer = a + b;
+    if (operation === '-') answer = a - b;
+    if (operation === '*') answer = a * b;
+
+    if (operation === '/') {
+      if (b === 0) {
+        result.textContent = 'You cannot divide by zero.';
+        return;
+      }
+      answer = a / b;
+    }
+
+    result.textContent = 'Result: ' + answer;
+  });
+
+  // Notes
+  const notesTitle = document.getElementById('notesTitle');
+  const notesText = document.getElementById('notesText');
+  const noteCount = document.getElementById('noteCount');
+  const notesStatus = document.getElementById('notesStatus');
+
+  notesTitle.value = data.notesTitle;
+  notesText.value = data.notesText;
+
+  function saveNotes() {
+    data.notesTitle = notesTitle.value;
+    data.notesText = notesText.value;
+    saveData();
+    noteCount.textContent = notesText.value.length + ' characters';
+    notesStatus.textContent = 'Notes saved in this browser.';
+  }
+
+  notesTitle.addEventListener('input', saveNotes);
+  notesText.addEventListener('input', saveNotes);
+  noteCount.textContent = notesText.value.length + ' characters';
+
+  document.getElementById('downloadNotes').addEventListener('click', function() {
+    const title = notesTitle.value.trim() || 'My Study Notes';
+    const content = title + '\n\n' + notesText.value;
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.download = title.replace(/[^a-z0-9 _-]/gi, '').trim() + '.txt';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('clearNotes').addEventListener('click', function() {
+    if (!confirm('Are you sure you want to clear your notes?')) return;
+
+    notesTitle.value = '';
+    notesText.value = '';
+    saveNotes();
+  });
+
+  // Flashcards
+  let flashcardIndex = 0;
+  let answerVisible = false;
+
+  const flashQuestionView = document.getElementById('flashQuestionView');
+  const flashAnswerView = document.getElementById('flashAnswerView');
+  const showAnswerButton = document.getElementById('showAnswer');
+  const nextFlashcardButton = document.getElementById('nextFlashcard');
+  const deleteFlashcardButton = document.getElementById('deleteFlashcard');
+
+  function renderFlashcard() {
+    const count = data.flashcards.length;
+    document.getElementById('flashCount').textContent = count + (count === 1 ? ' card' : ' cards');
+
+    const hasCards = count > 0;
+    showAnswerButton.hidden = !hasCards;
+    nextFlashcardButton.hidden = !hasCards;
+    deleteFlashcardButton.hidden = !hasCards;
+    flashAnswerView.hidden = !hasCards || !answerVisible;
+
+    if (!hasCards) {
+      flashQuestionView.textContent = 'No flashcards yet.';
+      flashAnswerView.textContent = '';
+      return;
+    }
+
+    flashcardIndex = flashcardIndex % count;
+    flashQuestionView.textContent =
+      'Card ' + (flashcardIndex + 1) + ': ' + data.flashcards[flashcardIndex].question;
+    flashAnswerView.textContent = data.flashcards[flashcardIndex].answer;
+    showAnswerButton.textContent = answerVisible ? 'Hide Answer' : 'Show Answer';
+  }
+
+  document.getElementById('flashcardForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const question = document.getElementById('flashQuestion').value.trim();
+    const answer = document.getElementById('flashAnswer').value.trim();
+
+    if (!question || !answer) return;
+
+    data.flashcards.push({ question: question, answer: answer });
+    saveData();
+    flashcardIndex = data.flashcards.length - 1;
+    answerVisible = false;
+
+    document.getElementById('flashQuestion').value = '';
+    document.getElementById('flashAnswer').value = '';
+    renderFlashcard();
+  });
+
+  showAnswerButton.addEventListener('click', function() {
+    answerVisible = !answerVisible;
+    renderFlashcard();
+  });
+
+  nextFlashcardButton.addEventListener('click', function() {
+    if (data.flashcards.length === 0) return;
+    flashcardIndex = (flashcardIndex + 1) % data.flashcards.length;
+    answerVisible = false;
+    renderFlashcard();
+  });
+
+  deleteFlashcardButton.addEventListener('click', function() {
+    if (data.flashcards.length === 0) return;
+    data.flashcards.splice(flashcardIndex, 1);
+    if (flashcardIndex >= data.flashcards.length) flashcardIndex = 0;
+    answerVisible = false;
+    saveData();
+    renderFlashcard();
+  });
+
+  renderFlashcard();
 </script>
+
 </body>
 </html>
