@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <!-- Google Analytics -->
@@ -248,7 +246,7 @@ footer{text-align:center;padding:30px 15px;color:var(--muted);font-size:12px}
         <div class="card">
           <div class="stat" id="statTasks">0/0</div>
           <div class="stat-label">Tasks completed</div>
-        </div>
+                  </div>
         <div class="card">
           <div class="stat" id="statMinutes">0</div>
           <div class="stat-label">Focus minutes today</div>
@@ -448,7 +446,7 @@ footer{text-align:center;padding:30px 15px;color:var(--muted);font-size:12px}
     </section>
 
     <section class="page" id="page-calculator">
-      <div class="eyebrow">QUICK MATH</div>
+            <div class="eyebrow">QUICK MATH</div>
       <h1>Calculator 🧮</h1>
       <div class="card" style="max-width:550px">
         <input type="number" id="calcA" placeholder="First number">
@@ -641,32 +639,47 @@ function renderTasks(){
   tasks.forEach(task=>{
     const row=document.createElement("div");
     row.className="task"+(task.done?" done":"");
+
     const checkbox=document.createElement("input");
-    checkbox.type="checkbox";checkbox.checked=task.done;
+    checkbox.type="checkbox";
+    checkbox.checked=task.done;
     checkbox.setAttribute("aria-label","Complete "+task.title);
     checkbox.addEventListener("change",()=>{
       data.tasks[task.index].done=checkbox.checked;
-      persist();renderTasks();renderDashboard();
+      persist();
+      renderTasks();
+      renderDashboard();
     });
 
-    const content=document.createElement("div");
-    content.className="task-name";
+    const info=document.createElement("div");
+    info.className="task-name";
+
     const title=document.createElement("div");
     title.textContent=task.title;
+    info.appendChild(title);
+
     const meta=document.createElement("div");
     meta.className="task-meta";
-    meta.textContent=[task.subject,task.due?"Due: "+task.due:"",task.priority==="high"?"HIGH PRIORITY":""].filter(Boolean).join(" · ");
-    if(task.priority==="high") meta.classList.add("priority-high");
-    content.append(title,meta);
+    meta.textContent=[task.subject,task.due?"Due: "+task.due:""].filter(Boolean).join(" · ");
+    info.appendChild(meta);
+
+    const priority=document.createElement("span");
+    priority.className="pill "+(task.priority==="high"?"priority-high":"priority-normal");
+    priority.textContent=task.priority==="high"?"High":"Normal";
 
     const remove=document.createElement("button");
-    remove.className="btn danger small";remove.textContent="✕";
+    remove.className="btn danger small";
+    remove.textContent="✕";
     remove.setAttribute("aria-label","Delete "+task.title);
     remove.addEventListener("click",()=>{
       data.tasks.splice(task.index,1);
-      persist();renderTasks();renderDashboard();
+      persist();
+      renderTasks();
+      renderDashboard();
+      notify("Task deleted.");
     });
-    row.append(checkbox,content,remove);
+
+    row.append(checkbox,info,priority,remove);
     list.appendChild(row);
   });
 }
@@ -674,29 +687,152 @@ function renderTasks(){
 el("taskForm").addEventListener("submit",event=>{
   event.preventDefault();
   const title=el("taskName").value.trim();
-  if(!title)return;
+  if(!title) return;
+
   data.tasks.push({
-    id:Date.now()+Math.random(),
-    title:title.slice(0,140),
-    subject:el("taskSubject").value.trim().slice(0,50),
+    title,
+    subject:el("taskSubject").value.trim(),
     due:el("taskDate").value,
     priority:el("taskPriority").value,
-    done:false
+    done:false,
+    createdAt:Date.now()
   });
-  persist();el("taskForm").reset();
-  renderTasks();renderDashboard();notify("Task added!");
+
+  persist();
+  el("taskForm").reset();
+  renderTasks();
+  renderDashboard();
+  notify("Task added!");
 });
+
 el("taskFilter").addEventListener("change",renderTasks);
 
 function clearCompleted(){
-  const count=data.tasks.filter(t=>t.done).length;
-  if(!count){notify("No completed tasks to clear.");return;}
-  if(!confirm("Delete "+count+" completed tasks?"))return;
-  data.tasks=data.tasks.filter(t=>!t.done);
-  persist();renderTasks();renderDashboard();
+  const before=data.tasks.length;
+  data.tasks=data.tasks.filter(task=>!task.done);
+  persist();
+  renderTasks();
+  renderDashboard();
+  notify((before-data.tasks.length)+" completed task(s) cleared.");
 }
 
-let timerSeconds = 25 * 60;
+function calculateGrade(){
+  const earned=Number(el("earned").value);
+  const possible=Number(el("possible").value);
+
+  if(el("earned").value===""||el("possible").value===""||
+     !Number.isFinite(earned)||!Number.isFinite(possible)||
+     earned<0||possible<=0||earned>possible){
+    el("gradeResult").textContent="Enter valid marks. Earned marks must be between 0 and the total.";
+    return;
+  }
+
+  const pct=earned/possible*100;
+  el("gradeResult").textContent="Your score: "+pct.toFixed(2)+"%";
+}
+
+function calculateTarget(){
+  const pct=Number(el("targetPercent").value);
+  const total=Number(el("targetTotal").value);
+
+  if(el("targetPercent").value===""||el("targetTotal").value===""||
+     !Number.isFinite(pct)||!Number.isFinite(total)||
+     pct<0||pct>100||total<=0){
+    el("targetResult").textContent="Enter a target from 0 to 100 and a total greater than zero.";
+    return;
+  }
+
+  el("targetResult").textContent="You need "+(pct/100*total).toFixed(2)+" marks out of "+total+".";
+}
+
+function calculatePercent(){
+  const pct=Number(el("pctValue").value);
+  const total=Number(el("pctTotal").value);
+
+  if(el("pctValue").value===""||el("pctTotal").value===""||
+     !Number.isFinite(pct)||!Number.isFinite(total)){
+    el("percentResult").textContent="Enter both numbers.";
+    return;
+  }
+
+  el("percentResult").textContent=pct+"% of "+total+" = "+(pct/100*total).toFixed(2);
+}
+
+function runCalculator(){
+  const aText=el("calcA").value;
+  const bText=el("calcB").value;
+  const a=Number(aText);
+  const b=Number(bText);
+  const op=el("calcOp").value;
+
+  if(aText===""||bText===""||!Number.isFinite(a)||!Number.isFinite(b)){
+    el("calcResult").textContent="Enter two valid numbers.";
+    return;
+  }
+
+  let result;
+  switch(op){
+    case "+": result=a+b; break;
+    case "-": result=a-b; break;
+    case "*": result=a*b; break;
+    case "/":
+      if(b===0){el("calcResult").textContent="Cannot divide by zero.";return;}
+      result=a/b;
+      break;
+    case "%":
+      if(b===0){el("calcResult").textContent="Cannot use zero as the divisor.";return;}
+      result=a%b;
+      break;
+    case "pow": result=Math.pow(a,b); break;
+    default:
+      el("calcResult").textContent="Choose an operation.";
+      return;
+  }
+
+  el("calcResult").textContent=Number.isFinite(result)
+    ?"Answer: "+Number(result.toPrecision(10))
+    :"The result is too large to display.";
+}
+
+el("notes").value=data.notes||"";
+
+function updateNoteCount(){
+  el("noteCount").textContent=el("notes").value.length+" characters";
+}
+
+el("notes").addEventListener("input",()=>{
+  data.notes=el("notes").value;
+  persist();
+  updateNoteCount();
+  el("notesStatus").textContent="Saved automatically.";
+});
+
+function downloadFile(filename,content,type){
+  const blob=new Blob([content],{type});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download=filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+function downloadNotes(){
+  downloadFile("student-notes.txt",el("notes").value,"text/plain;charset=utf-8");
+  el("notesStatus").textContent="Notes download started.";
+}
+
+function clearNotes(){
+  if(!confirm("Clear all your notes?")) return;
+  el("notes").value="";
+  data.notes="";
+  persist();
+  updateNoteCount();
+  el("notesStatus").textContent="Notes cleared.";
+}
+  let timerSeconds = 25 * 60;
 let timerInitial = 25 * 60;
 let timerInterval = null;
 let timerLabel = "Focus session";
@@ -710,7 +846,10 @@ function drawTimer() {
     String(min).padStart(2, "0") + ":" +
     String(sec).padStart(2, "0");
 
-  const pct = timerInitial ? (timerSeconds / timerInitial) * 100 : 0;
+  const pct = timerInitial
+    ? (timerSeconds / timerInitial) * 100
+    : 0;
+
   el("timerRing").style.setProperty("--pct", pct + "%");
   el("timerMode").textContent = timerLabel;
 }
@@ -720,34 +859,51 @@ function setTimerMode(minutes, label) {
   timerLabel = label;
   timerInitial = minutes * 60;
   timerSeconds = timerInitial;
+
   drawTimer();
   el("timerStart").disabled = false;
-  el("timerStatus").textContent = "Ready for " + label.toLowerCase() + ".";
+  el("timerStatus").textContent =
+    "Ready for " + label.toLowerCase() + ".";
 }
 
 function startTimer() {
   if (timerInterval !== null) return;
+
   if (timerSeconds <= 0) {
-    notify("Choose a timer mode first.");
+    notify("Choose a timer mode or reset the timer first.");
     return;
   }
 
+  // تحديد وقت النهاية مرة واحدة يمنع مشكلة إعادة ضبط العد التنازلي.
   timerEndAt = Date.now() + timerSeconds * 1000;
+
   el("timerStart").disabled = true;
   el("timerStatus").textContent = "Timer running. Stay focused!";
 
   timerInterval = setInterval(() => {
-    timerSeconds = Math.max(0, Math.ceil((timerEndAt - Date.now()) / 1000));
+    timerSeconds = Math.max(
+      0,
+      Math.ceil((timerEndAt - Date.now()) / 1000)
+    );
+
     drawTimer();
-    if (timerSeconds === 0) finishTimer();
+
+    if (timerSeconds <= 0) {
+      finishTimer();
+    }
   }, 200);
 }
 
 function pauseTimer() {
   if (timerInterval !== null) {
-    timerSeconds = Math.max(0, Math.ceil((timerEndAt - Date.now()) / 1000));
+    timerSeconds = Math.max(
+      0,
+      Math.ceil((timerEndAt - Date.now()) / 1000)
+    );
+
     clearInterval(timerInterval);
     timerInterval = null;
+
     drawTimer();
     el("timerStart").disabled = false;
     el("timerStatus").textContent = "Timer paused.";
@@ -762,311 +918,479 @@ function finishTimer() {
 
   timerSeconds = 0;
   drawTimer();
+
   el("timerStart").disabled = false;
 
   if (timerLabel === "Focus session") {
     data.focus.minutes += Math.round(timerInitial / 60);
     data.focus.sessions++;
+
     persist();
     renderDashboard();
   }
 
-  el("timerStatus").textContent = timerLabel + " complete! Great work.";
+  el("timerStatus").textContent =
+    timerLabel + " complete! Great work!";
+
   notify(timerLabel + " complete!");
 }
 
 function resetTimer() {
   pauseTimer();
+
   timerSeconds = timerInitial;
   drawTimer();
+
   el("timerStart").disabled = false;
   el("timerStatus").textContent = "Timer reset.";
 }
 
-function calculateGrade(){
-  const earned=el("earned").value;
-  const possible=el("possible").value;
-  if(earned===""||possible===""){el("gradeResult").textContent="Enter both values.";return;}
-  const a=Number(earned),b=Number(possible);
-  if(!Number.isFinite(a)||!Number.isFinite(b)||b<=0||a<0||a>b){
-    el("gradeResult").textContent="Check the marks. Earned marks must be between 0 and the total.";return;
-  }
-  const pct=a/b*100;
-  el("gradeResult").textContent="Your score: "+pct.toFixed(2)+"%";
-}
+// ---------------- FLASHCARDS ----------------
 
-function calculateTarget(){
-  const p=el("targetPercent").value,t=el("targetTotal").value;
-  if(p===""||t===""){el("targetResult").textContent="Enter both values.";return;}
-  const pct=Number(p),total=Number(t);
-  if(!Number.isFinite(pct)||!Number.isFinite(total)||pct<0||pct>100||total<=0){
-    el("targetResult").textContent="Use a target from 0 to 100 and a positive total.";return;
-  }
-  el("targetResult").textContent="You need "+(pct/100*total).toFixed(2)+" marks out of "+total+".";
-}
+let flashIndex = 0;
+let showingAnswer = false;
 
-function calculatePercent(){
-  const p=el("pctValue").value,n=el("pctTotal").value;
-  if(p===""||n===""){el("percentResult").textContent="Enter both values.";return;}
-  const result=Number(p)*Number(n)/100;
-  el("percentResult").textContent=Number.isFinite(result)?p+"% of "+n+" = "+result:"The result is too large.";
-}
-
-function runCalculator(){
-  const av=el("calcA").value,bv=el("calcB").value,op=el("calcOp").value;
-  if(av===""||bv===""){el("calcResult").textContent="Enter both numbers.";return;}
-  const a=Number(av),b=Number(bv);
-  let r;
-  if(op==="+")r=a+b;
-  if(op==="-")r=a-b;
-  if(op==="*")r=a*b;
-  if(op==="/"){if(b===0){el("calcResult").textContent="Cannot divide by zero.";return;}r=a/b;}
-  if(op==="%"){if(b===0){el("calcResult").textContent="Cannot divide by zero.";return;}r=a%b;}
-  if(op==="pow")r=Math.pow(a,b);
-  el("calcResult").textContent=Number.isFinite(r)?"Answer: "+r:"Result is outside the supported numeric range.";
-}
-
-let flashIndex=0;
-let showingAnswer=false;
-
-el("flashForm").addEventListener("submit",event=>{
+el("flashForm").addEventListener("submit", event => {
   event.preventDefault();
+
+  const question = el("flashQuestion").value.trim();
+  const answer = el("flashAnswer").value.trim();
+
+  if (!question || !answer) {
+    notify("Enter both a question and an answer.");
+    return;
+  }
+
   data.cards.push({
-    question:el("flashQuestion").value.trim().slice(0,300),
-    answer:el("flashAnswer").value.trim().slice(0,1000),
-    remembered:0,
-    reviewed:0
+    question: question.slice(0, 300),
+    answer: answer.slice(0, 1000),
+    remembered: 0,
+    reviewed: 0
   });
-  flashIndex=data.cards.length-1;
-  showingAnswer=false;
-  persist();el("flashForm").reset();renderFlashcard();renderDashboard();
+
+  flashIndex = data.cards.length - 1;
+  showingAnswer = false;
+
+  persist();
+  el("flashForm").reset();
+
+  renderFlashcard();
+  renderDashboard();
   notify("Flashcard added!");
 });
 
-function renderFlashcard(){
-  el("flashCount").textContent=data.cards.length+" cards";
-  const card=data.cards[flashIndex];
-  const box=el("flashDisplay");
+function renderFlashcard() {
+  el("flashCount").textContent = data.cards.length + " cards";
+
+  const card = data.cards[flashIndex];
+  const box = el("flashDisplay");
+
   box.replaceChildren();
-  if(!card){
-    box.textContent="Your flashcards will appear here.";
-    const small=document.createElement("small");
-    small.textContent="Add a card to get started.";
+
+  if (!card) {
+    box.textContent = "Your flashcards will appear here.";
+
+    const small = document.createElement("small");
+    small.textContent = "Add a card to get started.";
     box.appendChild(small);
-    el("flashStatus").textContent="Create a question and answer above.";
+
+    el("flashStatus").textContent =
+      "Create a question and answer above.";
+
     return;
   }
-  const content=document.createElement("div");
-  content.textContent=showingAnswer?card.answer:card.question;
+
+  const content = document.createElement("div");
+  content.textContent = showingAnswer
+    ? card.answer
+    : card.question;
+
   box.appendChild(content);
-  const small=document.createElement("small");
-  small.textContent=(showingAnswer?"ANSWER":"QUESTION")+" · "+(flashIndex+1)+" / "+data.cards.length+" · Click to flip";
+
+  const small = document.createElement("small");
+  small.textContent =
+    (showingAnswer ? "ANSWER" : "QUESTION") +
+    " · " + (flashIndex + 1) +
+    " / " + data.cards.length +
+    " · Click to flip";
+
   box.appendChild(small);
-  el("flashStatus").textContent="Remembered: "+card.remembered+" · Reviewed: "+card.reviewed;
+
+  el("flashStatus").textContent =
+    "Remembered: " + (card.remembered || 0) +
+    " · Reviewed: " + (card.reviewed || 0);
 }
 
-function flipCard(){
-  if(!data.cards.length)return;
-  showingAnswer=!showingAnswer;renderFlashcard();
-}
-function nextCard(){
-  if(!data.cards.length)return;
-  flashIndex=(flashIndex+1)%data.cards.length;
-  showingAnswer=false;renderFlashcard();
-}
-function previousCard(){
-  if(!data.cards.length)return;
-  flashIndex=(flashIndex-1+data.cards.length)%data.cards.length;
-  showingAnswer=false;renderFlashcard();
-}
-function markRemembered(remembered){
-  const card=data.cards[flashIndex];if(!card)return;
-  card.reviewed++;
-  if(remembered)card.remembered++;
-  persist();renderFlashcard();
-  notify(remembered?"Great! Marked as remembered.":"Added to your review count.");
-}
-function deleteFlashcard(){
-  if(!data.cards.length)return;
-  if(!confirm("Delete this flashcard?"))return;
-  data.cards.splice(flashIndex,1);
-  flashIndex=Math.max(0,Math.min(flashIndex,data.cards.length-1));
-  showingAnswer=false;persist();renderFlashcard();renderDashboard();
+function flipCard() {
+  if (!data.cards.length) return;
+
+  showingAnswer = !showingAnswer;
+  renderFlashcard();
 }
 
-const questions=[
-  {q:"Which planet is known as the Red Planet?",a:["Venus","Mars","Jupiter","Mercury"],correct:1},
-  {q:"What is the chemical symbol for oxygen?",a:["Ox","O","Og","Om"],correct:1},
-  {q:"What is 12 × 8?",a:["86","92","96","108"],correct:2},
-  {q:"Which gas do plants absorb during photosynthesis?",a:["Oxygen","Nitrogen","Hydrogen","Carbon dioxide"],correct:3},
-  {q:"What is the largest ocean on Earth?",a:["Atlantic","Indian","Pacific","Arctic"],correct:2},
-  {q:"How many sides does a hexagon have?",a:["Five","Six","Seven","Eight"],correct:1},
-  {q:"What is the approximate value of pi?",a:["2.14","3.14","4.13","3.41"],correct:1},
-  {q:"Which organ pumps blood around the body?",a:["Lungs","Brain","Heart","Liver"],correct:2},
-  {q:"At sea level, water boils at what temperature in Celsius?",a:["50°C","90°C","100°C","120°C"],correct:2},
-  {q:"What is the opposite of evaporation?",a:["Melting","Condensation","Sublimation","Freezing"],correct:1}
+function nextCard() {
+  if (!data.cards.length) return;
+
+  flashIndex = (flashIndex + 1) % data.cards.length;
+  showingAnswer = false;
+
+  renderFlashcard();
+}
+
+function previousCard() {
+  if (!data.cards.length) return;
+
+  flashIndex =
+    (flashIndex - 1 + data.cards.length) % data.cards.length;
+
+  showingAnswer = false;
+  renderFlashcard();
+}
+
+function markRemembered(remembered) {
+  const card = data.cards[flashIndex];
+
+  if (!card) return;
+
+  card.reviewed = (card.reviewed || 0) + 1;
+
+  if (remembered) {
+    card.remembered = (card.remembered || 0) + 1;
+  }
+
+  persist();
+  renderFlashcard();
+
+  notify(
+    remembered
+      ? "Great! Marked as remembered."
+      : "Added to your review count."
+  );
+}
+
+function deleteFlashcard() {
+  if (!data.cards.length) return;
+
+  if (!confirm("Delete this flashcard?")) return;
+
+  data.cards.splice(flashIndex, 1);
+
+  flashIndex = Math.max(
+    0,
+    Math.min(flashIndex, data.cards.length - 1)
+  );
+
+  showingAnswer = false;
+
+  persist();
+  renderFlashcard();
+  renderDashboard();
+
+  notify("Flashcard deleted.");
+}
+
+// ---------------- QUICK QUIZ ----------------
+
+const questions = [
+  {
+    q: "Which planet is known as the Red Planet?",
+    a: ["Venus", "Mars", "Jupiter", "Mercury"],
+    correct: 1
+  },
+  {
+    q: "What is the chemical symbol for oxygen?",
+    a: ["Ox", "O", "Og", "Om"],
+    correct: 1
+  },
+  {
+    q: "What is 12 × 8?",
+    a: ["86", "92", "96", "108"],
+    correct: 2
+  },
+  {
+    q: "Which gas do plants absorb during photosynthesis?",
+    a: ["Oxygen", "Nitrogen", "Hydrogen", "Carbon dioxide"],
+    correct: 3
+  },
+  {
+    q: "What is the largest ocean on Earth?",
+    a: ["Atlantic", "Indian", "Pacific", "Arctic"],
+    correct: 2
+  },
+  {
+    q: "How many sides does a hexagon have?",
+    a: ["Five", "Six", "Seven", "Eight"],
+    correct: 1
+  },
+  {
+    q: "What is the approximate value of pi?",
+    a: ["2.14", "3.14", "4.13", "3.41"],
+    correct: 1
+  },
+  {
+    q: "Which organ pumps blood around the body?",
+    a: ["Lungs", "Brain", "Heart", "Liver"],
+    correct: 2
+  },
+  {
+    q: "At sea level, water boils at what temperature in Celsius?",
+    a: ["50°C", "90°C", "100°C", "120°C"],
+    correct: 2
+  },
+  {
+    q: "What is the opposite of evaporation?",
+    a: ["Melting", "Condensation", "Sublimation", "Freezing"],
+    correct: 1
+  }
 ];
 
-let quizOrder=[];
-let quizIndex=0;
-let quizPoints=0;
-let quizAnswered=false;
-let quizFinished=false;
+let quizOrder = [];
+let quizIndex = 0;
+let quizPoints = 0;
+let quizAnswered = false;
+let quizFinished = false;
 
-function restartQuiz(){
-  quizOrder=questions.map((_,i)=>i);
-  for(let i=quizOrder.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [quizOrder[i],quizOrder[j]]=[quizOrder[j],quizOrder[i]];
+function restartQuiz() {
+  quizOrder = questions.map((_, i) => i);
+
+  for (let i = quizOrder.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [quizOrder[i], quizOrder[j]] =
+      [quizOrder[j], quizOrder[i]];
   }
-  quizIndex=0;quizPoints=0;quizAnswered=false;quizFinished=false;
+
+  quizIndex = 0;
+  quizPoints = 0;
+  quizAnswered = false;
+  quizFinished = false;
+
   renderQuestion();
 }
 
-function renderQuestion(){
+function renderQuestion() {
   el("quizFeedback").classList.add("hidden");
   el("quizChoices").replaceChildren();
-  el("quizNext").disabled=true;
-  el("quizNext").textContent="Next question →";
-  el("quizScore").textContent="Score: "+quizPoints;
-  if(quizIndex>=quizOrder.length){
-    quizFinished=true;
-    el("quizProgress").textContent="Complete";
-    el("quizQuestion").textContent="Quiz complete! 🎉";
-    el("quizChoices").textContent="You scored "+quizPoints+" out of "+quizOrder.length+".";
-    el("quizNext").textContent="Try again";
-    el("quizNext").disabled=false;
+  el("quizNext").disabled = true;
+  el("quizNext").textContent = "Next question →";
+  el("quizScore").textContent = "Score: " + quizPoints;
+
+  if (quizIndex >= quizOrder.length) {
+    quizFinished = true;
+
+    el("quizProgress").textContent = "Complete";
+    el("quizQuestion").textContent = "Quiz complete! 🎉";
+
+    el("quizChoices").textContent =
+      "You scored " + quizPoints +
+      " out of " + quizOrder.length + ".";
+
+    el("quizNext").textContent = "Try again";
+    el("quizNext").disabled = false;
+
     return;
   }
-  const q=questions[quizOrder[quizIndex]];
-  el("quizProgress").textContent="Question "+(quizIndex+1)+" of "+quizOrder.length;
-  el("quizQuestion").textContent=q.q;
-  q.a.forEach((answer,index)=>{
-    const btn=document.createElement("button");
-    btn.className="choice";
-    btn.textContent=String.fromCharCode(65+index)+". "+answer;
-    btn.addEventListener("click",()=>answerQuestion(index,btn));
+
+  const q = questions[quizOrder[quizIndex]];
+
+  el("quizProgress").textContent =
+    "Question " + (quizIndex + 1) +
+    " of " + quizOrder.length;
+
+  el("quizQuestion").textContent = q.q;
+
+  q.a.forEach((answer, index) => {
+    const btn = document.createElement("button");
+
+    btn.className = "choice";
+    btn.textContent =
+      String.fromCharCode(65 + index) + ". " + answer;
+
+    btn.addEventListener("click", () => {
+      answerQuestion(index, btn);
+    });
+
     el("quizChoices").appendChild(btn);
   });
 }
 
-function answerQuestion(index,button){
-  if(quizAnswered||quizFinished)return;
-  quizAnswered=true;
-  const q=questions[quizOrder[quizIndex]];
-  const choices=el("quizChoices").querySelectorAll("button");
-  choices.forEach((btn,i)=>{
-    btn.disabled=true;
-    if(i===q.correct)btn.classList.add("correct");
+function answerQuestion(index, button) {
+  if (quizAnswered || quizFinished) return;
+
+  quizAnswered = true;
+
+  const q = questions[quizOrder[quizIndex]];
+  const choices = el("quizChoices").querySelectorAll("button");
+
+  choices.forEach((btn, i) => {
+    btn.disabled = true;
+
+    if (i === q.correct) {
+      btn.classList.add("correct");
+    }
   });
-  const feedback=el("quizFeedback");
+
+  const feedback = el("quizFeedback");
   feedback.classList.remove("hidden");
-  if(index===q.correct){
-    quizPoints++;feedback.textContent="Correct! Great job. ✓";
-  }else{
+
+  if (index === q.correct) {
+    quizPoints++;
+    feedback.textContent = "Correct! Great job. ✓";
+  } else {
     button.classList.add("wrong");
-    feedback.textContent="Not quite. The correct answer is "+q.a[q.correct]+".";
+    feedback.textContent =
+      "Not quite. The correct answer is " +
+      q.a[q.correct] + ".";
   }
-  el("quizScore").textContent="Score: "+quizPoints;
-  el("quizNext").disabled=false;
-  el("quizNext").textContent=quizIndex===quizOrder.length-1?"See results":"Next question →";
+
+  el("quizScore").textContent = "Score: " + quizPoints;
+
+  el("quizNext").disabled = false;
+  el("quizNext").textContent =
+    quizIndex === quizOrder.length - 1
+      ? "See results"
+      : "Next question →";
 }
 
-function nextQuestion(){
-  if(quizFinished){restartQuiz();return;}
-  if(!quizAnswered)return;
-  quizIndex++;quizAnswered=false;renderQuestion();
+function nextQuestion() {
+  if (quizFinished) {
+    restartQuiz();
+    return;
+  }
+
+  if (!quizAnswered) return;
+
+  quizIndex++;
+  quizAnswered = false;
+
+  renderQuestion();
 }
 
-function saveNotes(){
-  data.notes=el("notes").value;
-  persist();el("notesStatus").textContent="Notes saved.";
+// ---------------- BACKUP & SETTINGS ----------------
+
+function exportData() {
+  downloadFile(
+    "student-pro-backup.json",
+    JSON.stringify(data, null, 2),
+    "application/json"
+  );
+
+  el("settingsStatus").textContent = "Backup downloaded.";
 }
-function updateNoteCount(){
-  el("noteCount").textContent=el("notes").value.length.toLocaleString()+" characters";
-}
-el("notes").addEventListener("input",()=>{
-  data.notes=el("notes").value;
-  updateNoteCount();
-  persist();
-  el("notesStatus").textContent="Saved locally.";
-});
-function clearNotes(){
-  if(!confirm("Clear all your notes?"))return;
-  data.notes="";el("notes").value="";
-  persist();updateNoteCount();el("notesStatus").textContent="Notes cleared.";
-}
-function downloadFile(name,content,type){
-  const blob=new Blob([content],{type:type});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement("a");
-  a.href=url;a.download=name;
-  document.body.appendChild(a);a.click();a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),1000);
-}
-function downloadNotes(){
-  downloadFile("student-notes.txt",data.notes,"text/plain;charset=utf-8");
-}
-function exportData(){
-  downloadFile("student-pro-backup.json",JSON.stringify(data,null,2),"application/json");
-  el("settingsStatus").textContent="Backup downloaded.";
-}
-function importData(){
-  const file=el("importFile").files[0];
-  if(!file){el("settingsStatus").textContent="Choose a JSON backup first.";return;}
-  const reader=new FileReader();
-  reader.onload=()=>{
-    try{
-      const incoming=JSON.parse(reader.result);
-      if(!incoming||typeof incoming!=="object"||
-        !Array.isArray(incoming.tasks)||!Array.isArray(incoming.cards)||
-        typeof incoming.notes!=="string"||
-        (incoming.theme!=="dark"&&incoming.theme!=="light")){
+
+function importData() {
+  const file = el("importFile").files[0];
+
+  if (!file) {
+    el("settingsStatus").textContent =
+      "Choose a JSON backup first.";
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    try {
+      const incoming = JSON.parse(reader.result);
+
+      if (
+        !incoming ||
+        typeof incoming !== "object" ||
+        !Array.isArray(incoming.tasks) ||
+        !Array.isArray(incoming.cards) ||
+        typeof incoming.notes !== "string" ||
+        (incoming.theme !== "dark" && incoming.theme !== "light")
+      ) {
         throw new Error("Invalid backup");
       }
-      if(!confirm("Replace your current saved data with this backup?"))return;
-      data={
-        ...defaultData(),...incoming,
-        tasks:incoming.tasks,
-        cards:incoming.cards,
-        notes:incoming.notes,
-        focus:incoming.focus&&incoming.focus.date===TODAY()
-          ?incoming.focus:defaultData().focus
+
+      if (!confirm(
+        "Replace your current saved data with this backup?"
+      )) return;
+
+      const base = defaultData();
+
+      data = {
+        ...base,
+        ...incoming,
+        tasks: incoming.tasks,
+        cards: incoming.cards,
+        notes: incoming.notes,
+        focus:
+          incoming.focus && incoming.focus.date === TODAY()
+            ? incoming.focus
+            : base.focus
       };
-      if(!persist())return;
+
+      if (!persist()) return;
+
       initializeUI();
-      el("settingsStatus").textContent="Backup imported successfully.";
+
+      el("settingsStatus").textContent =
+        "Backup imported successfully.";
+
       notify("Backup imported!");
-    }catch(e){
-      el("settingsStatus").textContent="Invalid backup file. Nothing was imported.";
+    } catch (error) {
+      el("settingsStatus").textContent =
+        "Invalid backup file. Nothing was imported.";
     }
   };
+
   reader.readAsText(file);
 }
-function resetAll(){
-  if(!confirm("This permanently clears all Student Pro data stored in this browser. Continue?"))return;
+
+function resetAll() {
+  if (!confirm(
+    "This permanently clears all Student Pro data stored in this browser. Continue?"
+  )) return;
+
   pauseTimer();
-  data=defaultData();
-  try{localStorage.removeItem(KEY);}catch(e){}
-  timerLabel="Focus session";timerInitial=1500;timerSeconds=1500;
+
+  data = defaultData();
+
+  try {
+    localStorage.removeItem(KEY);
+  } catch (error) {
+    // Continue resetting the current page.
+  }
+
+  timerLabel = "Focus session";
+  timerInitial = 25 * 60;
+  timerSeconds = timerInitial;
+
   initializeUI();
-  el("settingsStatus").textContent="All saved data has been reset.";
+
+  el("settingsStatus").textContent =
+    "All saved data has been reset.";
+
   drawTimer();
   notify("Data reset.");
 }
 
-function initializeUI(){
-  applyTheme();updateGreeting();
-  el("displayName").value=data.name;
-  el("notes").value=data.notes;
+// ---------------- INITIALIZE WEBSITE ----------------
+
+function initializeUI() {
+  applyTheme();
+  updateGreeting();
+
+  el("displayName").value = data.name || "";
+  el("notes").value = data.notes || "";
+
   updateNoteCount();
-  renderTasks();renderFlashcard();renderDashboard();
+  renderTasks();
+  renderFlashcard();
+  renderDashboard();
   drawTimer();
-  el("dateLabel").textContent=new Date().toLocaleDateString(undefined,{month:"short",day:"numeric"});
+
+  el("dateLabel").textContent =
+    new Date().toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric"
+    });
 }
 
 initializeUI();
 restartQuiz();
+
 </script>
 </body>
 </html>
