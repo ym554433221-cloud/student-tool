@@ -4,111 +4,200 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Tool</title>
+<meta name="description" content="Free student tools: calculators, grade checker, study timer, notes and homework planner.">
+<title>Student Tool - Free Study Tools</title>
 
 <style>
-* {
-    box-sizing: border-box;
+:root {
+  --bg: #f4f7fc;
+  --card: #ffffff;
+  --text: #172033;
+  --muted: #65718a;
+  --blue: #4263eb;
+  --border: #e3e8f2;
+  --soft: #edf1ff;
 }
 
+body.dark {
+  --bg: #101522;
+  --card: #1b2334;
+  --text: #f1f5ff;
+  --muted: #aab5cc;
+  --blue: #8297ff;
+  --border: #303b50;
+  --soft: #27314b;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f3f4f6;
-    color: #222;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  transition: background .2s, color .2s;
 }
 
 header {
-    background: #2563eb;
-    color: white;
-    text-align: center;
-    padding: 30px 15px;
+  background: linear-gradient(135deg, #2948bd, #6985ff);
+  color: white;
+  padding: 30px 18px;
+  text-align: center;
 }
 
-header h1 {
-    margin: 0 0 10px;
-}
+header h1 { margin: 0 0 10px; font-size: 34px; }
+header p { margin: 0; line-height: 1.6; }
 
 nav {
-    background: #1e40af;
-    padding: 12px;
-    text-align: center;
+  background: var(--card);
+  padding: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
 }
 
 nav a {
-    color: white;
-    text-decoration: none;
-    margin: 0 12px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 14px;
+}
+
+nav a:hover { color: var(--blue); }
+
+button, input, textarea { font: inherit; }
+
+button {
+  border: 0;
+  background: var(--blue);
+  color: white;
+  padding: 11px 15px;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: opacity .2s, transform .2s;
+}
+
+button:hover { opacity: .88; }
+button:active { transform: scale(.98); }
+
+button.secondary {
+  background: var(--soft);
+  color: var(--text);
 }
 
 .container {
-    max-width: 900px;
-    margin: 25px auto;
-    padding: 15px;
+  width: min(1050px, 92%);
+  margin: 28px auto;
+}
+
+.intro { text-align: center; margin-bottom: 25px; }
+.intro h2 { margin-bottom: 8px; font-size: 27px; }
+.intro p { color: var(--muted); line-height: 1.6; }
+
+#search {
+  display: block;
+  width: 100%;
+  max-width: 550px;
+  margin: 22px auto;
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
 }
 
 .card {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    box-shadow: 0 3px 12px #00000010;
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 22px;
+  border-radius: 16px;
+  min-width: 0;
+  box-shadow: 0 5px 18px #15254a08;
 }
 
-h2 {
-    color: #2563eb;
-}
+.card h2 { font-size: 20px; margin-top: 0; }
+.card p { color: var(--muted); line-height: 1.6; }
 
 input, textarea {
-    width: 100%;
-    padding: 12px;
-    margin: 8px 0;
-    border: 1px solid #ccc;
-    border-radius: 7px;
-    font-size: 16px;
+  width: 100%;
+  padding: 12px;
+  margin: 7px 0;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  border-radius: 9px;
 }
 
-button {
-    background: #2563eb;
-    color: white;
-    border: none;
-    padding: 11px 16px;
-    border-radius: 7px;
-    cursor: pointer;
-    margin: 5px 0;
-    font-size: 15px;
+textarea { resize: vertical; }
+
+.row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-button:hover {
-    background: #1d4ed8;
-}
+.row > input { flex: 1; min-width: 90px; }
 
 .result {
-    background: #eff6ff;
-    padding: 12px;
-    border-radius: 7px;
-    margin-top: 12px;
-    overflow-wrap: anywhere;
-    white-space: pre-wrap;
+  background: var(--soft);
+  color: var(--text);
+  padding: 13px;
+  margin-top: 12px;
+  border-radius: 9px;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+
+.timer {
+  text-align: center;
+  font-size: clamp(38px, 8vw, 58px);
+  font-weight: bold;
+  margin: 20px 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.task {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  overflow-wrap: anywhere;
+}
+
+.task input { width: auto; margin: 0; }
+.task span { flex: 1; }
+.task.done span { text-decoration: line-through; color: var(--muted); }
+
+.delete {
+  background: #e5484d;
+  padding: 7px 10px;
 }
 
 footer {
-    text-align: center;
-    padding: 20px;
-    color: #666;
+  padding: 25px 15px;
+  text-align: center;
+  color: var(--muted);
+  line-height: 1.8;
 }
 
-.tool-buttons {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
+.hidden { display: none !important; }
 
-@media (max-width: 600px) {
-    nav a {
-        display: inline-block;
-        margin: 6px;
-    }
+@media (max-width: 650px) {
+  .grid { grid-template-columns: 1fr; }
+  header h1 { font-size: 29px; }
+  .container { width: 94%; }
+  .card { padding: 17px; }
 }
 </style>
 </head>
@@ -116,187 +205,423 @@ footer {
 <body>
 
 <header>
-    <h1>Student Tool 🎓</h1>
-    <p>Free tools to make studying easier!</p>
+  <h1>🎓 Student Tool</h1>
+  <p>Free tools to study smarter, stay organized and save time.</p>
 </header>
 
 <nav>
-    <a href="#calculator">Calculator</a>
-    <a href="#notes">Notes</a>
-    <a href="#counter">Word Counter</a>
-    <a href="#contact">About</a>
+  <a href="#tools">All Tools</a>
+  <a href="#grades">Grades</a>
+  <a href="#planner">Study Planner</a>
+  <button class="secondary" id="themeBtn" onclick="toggleTheme()">
+    🌙 Dark Mode
+  </button>
 </nav>
 
 <main class="container">
 
-    <section class="card" id="calculator">
-        <h2>🧮 Calculator</h2>
-        <input type="number" id="num1" placeholder="First number">
+  <section class="intro">
+    <h2>Your Free Study Toolkit</h2>
+    <p>Simple, useful tools for students. No account required.</p>
+    <input id="search" type="search"
+      placeholder="🔎 Search tools..."
+      aria-label="Search tools">
+  </section>
+
+  <div class="grid" id="tools">
+
+    <section class="card" data-title="calculator math addition subtraction multiplication division">
+      <h2>🧮 Calculator</h2>
+      <p>Calculate two numbers quickly.</p>
+      <input type="number" id="num1" placeholder="First number">
+      <div class="row">
         <input type="number" id="num2" placeholder="Second number">
-
-        <div class="tool-buttons">
-            <button onclick="calculate('+')">Add +</button>
-            <button onclick="calculate('-')">Subtract −</button>
-            <button onclick="calculate('*')">Multiply ×</button>
-            <button onclick="calculate('/')">Divide ÷</button>
-        </div>
-
-        <div class="result" id="calcResult">Your answer will appear here.</div>
+      </div>
+      <div class="row">
+        <button onclick="calculate('+')">+</button>
+        <button onclick="calculate('-')">−</button>
+        <button onclick="calculate('*')">×</button>
+        <button onclick="calculate('/')">÷</button>
+      </div>
+      <div class="result" id="calcResult" aria-live="polite">Your answer appears here.</div>
     </section>
 
-    <section class="card" id="notes">
-        <h2>📝 Study Notes</h2>
-        <p>Write your notes below. You can save them in your browser.</p>
+    <section class="card" data-title="percentage percent discount increase decrease">
+      <h2>📊 Percentage Calculator</h2>
+      <p>Find a percentage of any number.</p>
+      <input type="number" id="percent" placeholder="Percentage (%)">
+      <input type="number" id="percentNumber" placeholder="Number">
+      <button onclick="calculatePercent()">Calculate</button>
+      <div class="result" id="percentResult" aria-live="polite">Your answer appears here.</div>
+    </section>
 
-        <textarea id="noteText" rows="6" placeholder="Write your notes here..."></textarea>
+    <section class="card" id="grades" data-title="grade marks score exam result school">
+      <h2>🎯 Grade Calculator</h2>
+      <p>Calculate your score as a percentage.</p>
+      <input type="number" id="score" placeholder="Marks you got">
+      <input type="number" id="totalScore" placeholder="Total possible marks">
+      <button onclick="calculateGrade()">Calculate Grade</button>
+      <div class="result" id="gradeResult" aria-live="polite">Your result appears here.</div>
+    </section>
 
+    <section class="card" data-title="pomodoro study timer focus break productivity">
+      <h2>⏱️ Study Timer</h2>
+      <p>Try 25 minutes of focus followed by a 5-minute break.</p>
+      <div class="timer" id="timerDisplay">25:00</div>
+      <div class="row">
+        <button onclick="startTimer()">Start</button>
+        <button class="secondary" onclick="pauseTimer()">Pause</button>
+        <button class="secondary" onclick="resetTimer()">Reset</button>
+      </div>
+      <div class="result" id="timerStatus" aria-live="polite">Ready to focus?</div>
+    </section>
+
+    <section class="card" id="planner" data-title="todo task list homework planner checklist">
+      <h2>✅ Study Planner</h2>
+      <p>Add homework and mark tasks when completed.</p>
+      <div class="row">
+        <input id="taskInput" placeholder="e.g. Revise Chemistry">
+        <button onclick="addTask()">Add</button>
+      </div>
+      <div id="taskList"></div>
+      <div class="result" id="taskStatus" aria-live="polite">Your tasks are saved in this browser.</div>
+    </section>
+
+    <section class="card" data-title="notes writing save study notes">
+      <h2>📝 Quick Notes</h2>
+      <p>Your notes are saved locally in this browser.</p>
+      <textarea id="notes" rows="5" placeholder="Write your notes..."></textarea>
+      <div class="row">
         <button onclick="saveNotes()">Save Notes</button>
-        <button onclick="loadNotes()">Load Notes</button>
-        <button onclick="clearNotes()">Clear Notes</button>
-
-        <div class="result" id="noteResult">Your notes are ready.</div>
+        <button class="secondary" onclick="clearNotes()">Clear</button>
+      </div>
+      <div class="result" id="notesStatus" aria-live="polite">Ready for your notes.</div>
     </section>
 
-    <section class="card" id="counter">
-        <h2>🔤 Word Counter</h2>
-
-        <textarea id="wordText" rows="5"
-        placeholder="Type or paste your text here..."
-        oninput="countWords()"></textarea>
-
-        <div class="result" id="wordResult">
-            Words: 0 | Characters: 0
-        </div>
+    <section class="card" data-title="word counter characters essay writing">
+      <h2>🔤 Word Counter</h2>
+      <p>Count words and characters as you type.</p>
+      <textarea id="wordText" rows="5" placeholder="Type or paste your text..."></textarea>
+      <div class="result" id="wordResult" aria-live="polite">Words: 0 | Characters: 0</div>
     </section>
 
-    <section class="card">
-        <h2>🎯 Random Number Generator</h2>
-        <p>Generate a random number between two numbers.</p>
-
-        <input type="number" id="minNum" placeholder="Minimum number">
-        <input type="number" id="maxNum" placeholder="Maximum number">
-
-        <button onclick="randomNumber()">Generate Number</button>
-
-        <div class="result" id="randomResult">Your number will appear here.</div>
+    <section class="card" data-title="random number generator game">
+      <h2>🎲 Random Number</h2>
+      <p>Generate a random whole number between two values.</p>
+      <input type="number" id="minNum" placeholder="Minimum number">
+      <input type="number" id="maxNum" placeholder="Maximum number">
+      <button onclick="randomNumber()">Generate</button>
+      <div class="result" id="randomResult" aria-live="polite">Your number appears here.</div>
     </section>
 
-    <section class="card" id="contact">
-        <h2>About Student Tool</h2>
-        <p>A free website made to help students study smarter.</p>
-        <p>More free tools are coming soon!</p>
-    </section>
+  </div>
+
+  <p id="noResults" class="result hidden">No matching tools found. Try another search.</p>
 
 </main>
 
 <footer>
-    <p>© 2026 Student Tool | Made for Students ❤️</p>
+  <strong>Student Tool</strong> — Free tools for every student.<br>
+  Made to make studying easier. © 2026
 </footer>
 
 <script>
-function calculate(operator) {
-    const a = document.getElementById("num1").value;
-    const b = document.getElementById("num2").value;
-    const result = document.getElementById("calcResult");
-
-    if (a.trim() === "" || b.trim() === "") {
-        result.textContent = "Please enter both numbers.";
-        return;
-    }
-
-    const x = Number(a);
-    const y = Number(b);
-    let answer;
-
-    if (operator === "+") answer = x + y;
-    if (operator === "-") answer = x - y;
-    if (operator === "*") answer = x * y;
-
-    if (operator === "/") {
-        if (y === 0) {
-            result.textContent = "Cannot divide by zero!";
-            return;
-        }
-        answer = x / y;
-    }
-
-    result.textContent = "Answer: " + answer;
+function byId(id) {
+  return document.getElementById(id);
 }
+
+function show(id, message) {
+  byId(id).textContent = message;
+}
+
+function calculate(operator) {
+  const a = byId("num1").value;
+  const b = byId("num2").value;
+
+  if (a.trim() === "" || b.trim() === "") {
+    show("calcResult", "Please enter both numbers.");
+    return;
+  }
+
+  const x = Number(a);
+  const y = Number(b);
+  let answer;
+
+  if (operator === "+") answer = x + y;
+  if (operator === "-") answer = x - y;
+  if (operator === "*") answer = x * y;
+
+  if (operator === "/") {
+    if (y === 0) {
+      show("calcResult", "Cannot divide by zero.");
+      return;
+    }
+    answer = x / y;
+  }
+
+  show("calcResult", "Answer: " + answer);
+}
+
+function calculatePercent() {
+  const p = byId("percent").value;
+  const n = byId("percentNumber").value;
+
+  if (p.trim() === "" || n.trim() === "") {
+    show("percentResult", "Enter both the percentage and the number.");
+    return;
+  }
+
+  show("percentResult", p + "% of " + n + " = " + (Number(p) * Number(n) / 100));
+}
+
+function calculateGrade() {
+  const score = byId("score").value;
+  const total = byId("totalScore").value;
+
+  if (score.trim() === "" || total.trim() === "") {
+    show("gradeResult", "Please enter both scores.");
+    return;
+  }
+
+  const s = Number(score);
+  const t = Number(total);
+
+  if (t <= 0 || s < 0 || s > t) {
+    show("gradeResult", "Check your marks. Your score must be between 0 and the total.");
+    return;
+  }
+
+  const percentage = (s / t) * 100;
+  show("gradeResult", "Your score: " + percentage.toFixed(2) + "%");
+}
+
+let timerSeconds = 25 * 60;
+let timerInterval = null;
+let isBreak = false;
+
+function renderTimer() {
+  const mins = Math.floor(timerSeconds / 60);
+  const secs = timerSeconds % 60;
+  show("timerDisplay",
+    String(mins).padStart(2, "0") + ":" + String(secs).padStart(2, "0"));
+}
+
+function startTimer() {
+  if (timerInterval !== null) return;
+
+  if (timerSeconds <= 0) {
+    show("timerStatus", "Press Reset to start a new session.");
+    return;
+  }
+
+  show("timerStatus", isBreak ? "Break time. Relax!" : "Focus time. You can do it!");
+
+  timerInterval = setInterval(function() {
+    timerSeconds--;
+    renderTimer();
+
+    if (timerSeconds <= 0) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      show("timerStatus", isBreak
+        ? "Break finished! Ready to study?"
+        : "Focus session complete! Time for a break.");
+      isBreak = !isBreak;
+      timerSeconds = isBreak ? 5 * 60 : 25 * 60;
+      renderTimer();
+    }
+  }, 1000);
+}
+
+function pauseTimer() {
+  if (timerInterval !== null) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    show("timerStatus", "Timer paused.");
+  }
+}
+
+function resetTimer() {
+  pauseTimer();
+  isBreak = false;
+  timerSeconds = 25 * 60;
+  renderTimer();
+  show("timerStatus", "Timer reset. Ready to focus?");
+}
+
+let tasks = [];
+
+function saveTasks() {
+  try {
+    localStorage.setItem("studentToolTasks", JSON.stringify(tasks));
+    show("taskStatus", "Tasks saved in this browser.");
+  } catch (e) {
+    show("taskStatus", "Could not save tasks in this browser.");
+  }
+}
+
+function renderTasks() {
+  const list = byId("taskList");
+  list.replaceChildren();
+
+  tasks.forEach(function(task, index) {
+    const row = document.createElement("div");
+    row.className = "task" + (task.done ? " done" : "");
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = task.done;
+    checkbox.setAttribute("aria-label", "Mark task complete");
+    checkbox.addEventListener("change", function() {
+      tasks[index].done = checkbox.checked;
+      renderTasks();
+      saveTasks();
+    });
+
+    const label = document.createElement("span");
+    label.textContent = task.text;
+
+    const remove = document.createElement("button");
+    remove.className = "delete";
+    remove.textContent = "Delete";
+    remove.addEventListener("click", function() {
+      tasks.splice(index, 1);
+      renderTasks();
+      saveTasks();
+    });
+
+    row.append(checkbox, label, remove);
+    list.appendChild(row);
+  });
+}
+
+function addTask() {
+  const input = byId("taskInput");
+  const text = input.value.trim();
+
+  if (!text) {
+    show("taskStatus", "Type a task first.");
+    return;
+  }
+
+  tasks.push({ text: text, done: false });
+  input.value = "";
+  renderTasks();
+  saveTasks();
+  input.focus();
+}
+
+byId("taskInput").addEventListener("keydown", function(event) {
+  if (event.key === "Enter") addTask();
+});
+
+try {
+  const savedTasks = localStorage.getItem("studentToolTasks");
+  if (savedTasks) {
+    const parsed = JSON.parse(savedTasks);
+    if (Array.isArray(parsed)) {
+      tasks = parsed.filter(function(task) {
+        return task && typeof task.text === "string";
+      }).map(function(task) {
+        return { text: task.text, done: Boolean(task.done) };
+      });
+    }
+  }
+} catch (e) {}
+
+renderTasks();
 
 function saveNotes() {
-    const notes = document.getElementById("noteText").value;
-
-    try {
-        localStorage.setItem("studentToolNotes", notes);
-        document.getElementById("noteResult").textContent =
-            "Notes saved successfully!";
-    } catch (error) {
-        document.getElementById("noteResult").textContent =
-            "Could not save notes in this browser.";
-    }
-}
-
-function loadNotes() {
-    try {
-        const notes = localStorage.getItem("studentToolNotes");
-        document.getElementById("noteText").value = notes || "";
-        document.getElementById("noteResult").textContent =
-            notes === null ? "No saved notes found." : "Notes loaded!";
-    } catch (error) {
-        document.getElementById("noteResult").textContent =
-            "Could not load notes.";
-    }
+  try {
+    localStorage.setItem("studentToolNotes", byId("notes").value);
+    show("notesStatus", "Notes saved successfully!");
+  } catch (e) {
+    show("notesStatus", "Could not save notes in this browser.");
+  }
 }
 
 function clearNotes() {
-    if (confirm("Are you sure you want to clear your notes?")) {
-        document.getElementById("noteText").value = "";
+  if (!confirm("Delete all your saved notes?")) return;
 
-        try {
-            localStorage.removeItem("studentToolNotes");
-            document.getElementById("noteResult").textContent =
-                "Notes cleared.";
-        } catch (error) {
-            document.getElementById("noteResult").textContent =
-                "Notes cleared from the text box.";
-        }
-    }
+  byId("notes").value = "";
+
+  try {
+    localStorage.removeItem("studentToolNotes");
+    show("notesStatus", "Notes cleared.");
+  } catch (e) {
+    show("notesStatus", "Text cleared.");
+  }
 }
 
-function countWords() {
-    const text = document.getElementById("wordText").value.trim();
-    const words = text === "" ? [] : text.split(/\s+/);
-    const characters = document.getElementById("wordText").value.length;
+try {
+  byId("notes").value = localStorage.getItem("studentToolNotes") || "";
+} catch (e) {}
 
-    document.getElementById("wordResult").textContent =
-        "Words: " + words.length +
-        " | Characters: " + characters;
-}
+byId("wordText").addEventListener("input", function() {
+  const text = byId("wordText").value;
+  const trimmed = text.trim();
+  const words = trimmed ? trimmed.split(/\s+/).length : 0;
+
+  show("wordResult",
+    "Words: " + words + " | Characters: " + text.length);
+});
 
 function randomNumber() {
-    const minValue = document.getElementById("minNum").value;
-    const maxValue = document.getElementById("maxNum").value;
-    const result = document.getElementById("randomResult");
+  const minText = byId("minNum").value;
+  const maxText = byId("maxNum").value;
 
-    if (minValue.trim() === "" || maxValue.trim() === "") {
-        result.textContent = "Please enter both numbers.";
-        return;
-    }
+  if (minText.trim() === "" || maxText.trim() === "") {
+    show("randomResult", "Enter both the minimum and maximum.");
+    return;
+  }
 
-    const min = Number(minValue);
-    const max = Number(maxValue);
+  const min = Number(minText);
+  const max = Number(maxText);
 
-    if (!Number.isSafeInteger(min) ||
-        !Number.isSafeInteger(max) ||
-        min > max) {
-        result.textContent =
-            "Enter valid whole numbers. Minimum must not exceed maximum.";
-        return;
-    }
+  if (!Number.isSafeInteger(min) ||
+      !Number.isSafeInteger(max) ||
+      min > max) {
+    show("randomResult", "Enter valid whole numbers. Minimum must not exceed maximum.");
+    return;
+  }
 
-    result.textContent = "Your random number: " +
-        (Math.floor(Math.random() * (max - min + 1)) + min);
+  show("randomResult", "Your number: " +
+    (Math.floor(Math.random() * (max - min + 1)) + min));
 }
+
+function toggleTheme() {
+  document.body.classList.toggle("dark");
+  const dark = document.body.classList.contains("dark");
+
+  byId("themeBtn").textContent = dark ? "☀️ Light Mode" : "🌙 Dark Mode";
+
+  try {
+    localStorage.setItem("studentToolTheme", dark ? "dark" : "light");
+  } catch (e) {}
+}
+
+try {
+  if (localStorage.getItem("studentToolTheme") === "dark") {
+    document.body.classList.add("dark");
+    byId("themeBtn").textContent = "☀️ Light Mode";
+  }
+} catch (e) {}
+
+byId("search").addEventListener("input", function() {
+  const query = this.value.trim().toLowerCase();
+  const cards = document.querySelectorAll("#tools .card");
+  let visible = 0;
+
+  cards.forEach(function(card) {
+    const match = card.dataset.title.toLowerCase().includes(query) ||
+      card.textContent.toLowerCase().includes(query);
+
+    card.classList.toggle("hidden", !match);
+    if (match) visible++;
+  });
+
+  byId("noResults").classList.toggle("hidden", visible !== 0);
+});
 </script>
 
 </body>
