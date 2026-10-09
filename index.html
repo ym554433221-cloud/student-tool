@@ -1,0 +1,303 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Tool</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f3f4f6;
+    color: #222;
+}
+
+header {
+    background: #2563eb;
+    color: white;
+    text-align: center;
+    padding: 30px 15px;
+}
+
+header h1 {
+    margin: 0 0 10px;
+}
+
+nav {
+    background: #1e40af;
+    padding: 12px;
+    text-align: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 12px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 25px auto;
+    padding: 15px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 12px #00000010;
+}
+
+h2 {
+    color: #2563eb;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    font-size: 16px;
+}
+
+button {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 11px 16px;
+    border-radius: 7px;
+    cursor: pointer;
+    margin: 5px 0;
+    font-size: 15px;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+.result {
+    background: #eff6ff;
+    padding: 12px;
+    border-radius: 7px;
+    margin-top: 12px;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+.tool-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+    nav a {
+        display: inline-block;
+        margin: 6px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Student Tool 🎓</h1>
+    <p>Free tools to make studying easier!</p>
+</header>
+
+<nav>
+    <a href="#calculator">Calculator</a>
+    <a href="#notes">Notes</a>
+    <a href="#counter">Word Counter</a>
+    <a href="#contact">About</a>
+</nav>
+
+<main class="container">
+
+    <section class="card" id="calculator">
+        <h2>🧮 Calculator</h2>
+        <input type="number" id="num1" placeholder="First number">
+        <input type="number" id="num2" placeholder="Second number">
+
+        <div class="tool-buttons">
+            <button onclick="calculate('+')">Add +</button>
+            <button onclick="calculate('-')">Subtract −</button>
+            <button onclick="calculate('*')">Multiply ×</button>
+            <button onclick="calculate('/')">Divide ÷</button>
+        </div>
+
+        <div class="result" id="calcResult">Your answer will appear here.</div>
+    </section>
+
+    <section class="card" id="notes">
+        <h2>📝 Study Notes</h2>
+        <p>Write your notes below. You can save them in your browser.</p>
+
+        <textarea id="noteText" rows="6" placeholder="Write your notes here..."></textarea>
+
+        <button onclick="saveNotes()">Save Notes</button>
+        <button onclick="loadNotes()">Load Notes</button>
+        <button onclick="clearNotes()">Clear Notes</button>
+
+        <div class="result" id="noteResult">Your notes are ready.</div>
+    </section>
+
+    <section class="card" id="counter">
+        <h2>🔤 Word Counter</h2>
+
+        <textarea id="wordText" rows="5"
+        placeholder="Type or paste your text here..."
+        oninput="countWords()"></textarea>
+
+        <div class="result" id="wordResult">
+            Words: 0 | Characters: 0
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>🎯 Random Number Generator</h2>
+        <p>Generate a random number between two numbers.</p>
+
+        <input type="number" id="minNum" placeholder="Minimum number">
+        <input type="number" id="maxNum" placeholder="Maximum number">
+
+        <button onclick="randomNumber()">Generate Number</button>
+
+        <div class="result" id="randomResult">Your number will appear here.</div>
+    </section>
+
+    <section class="card" id="contact">
+        <h2>About Student Tool</h2>
+        <p>A free website made to help students study smarter.</p>
+        <p>More free tools are coming soon!</p>
+    </section>
+
+</main>
+
+<footer>
+    <p>© 2026 Student Tool | Made for Students ❤️</p>
+</footer>
+
+<script>
+function calculate(operator) {
+    const a = document.getElementById("num1").value;
+    const b = document.getElementById("num2").value;
+    const result = document.getElementById("calcResult");
+
+    if (a.trim() === "" || b.trim() === "") {
+        result.textContent = "Please enter both numbers.";
+        return;
+    }
+
+    const x = Number(a);
+    const y = Number(b);
+    let answer;
+
+    if (operator === "+") answer = x + y;
+    if (operator === "-") answer = x - y;
+    if (operator === "*") answer = x * y;
+
+    if (operator === "/") {
+        if (y === 0) {
+            result.textContent = "Cannot divide by zero!";
+            return;
+        }
+        answer = x / y;
+    }
+
+    result.textContent = "Answer: " + answer;
+}
+
+function saveNotes() {
+    const notes = document.getElementById("noteText").value;
+
+    try {
+        localStorage.setItem("studentToolNotes", notes);
+        document.getElementById("noteResult").textContent =
+            "Notes saved successfully!";
+    } catch (error) {
+        document.getElementById("noteResult").textContent =
+            "Could not save notes in this browser.";
+    }
+}
+
+function loadNotes() {
+    try {
+        const notes = localStorage.getItem("studentToolNotes");
+        document.getElementById("noteText").value = notes || "";
+        document.getElementById("noteResult").textContent =
+            notes === null ? "No saved notes found." : "Notes loaded!";
+    } catch (error) {
+        document.getElementById("noteResult").textContent =
+            "Could not load notes.";
+    }
+}
+
+function clearNotes() {
+    if (confirm("Are you sure you want to clear your notes?")) {
+        document.getElementById("noteText").value = "";
+
+        try {
+            localStorage.removeItem("studentToolNotes");
+            document.getElementById("noteResult").textContent =
+                "Notes cleared.";
+        } catch (error) {
+            document.getElementById("noteResult").textContent =
+                "Notes cleared from the text box.";
+        }
+    }
+}
+
+function countWords() {
+    const text = document.getElementById("wordText").value.trim();
+    const words = text === "" ? [] : text.split(/\s+/);
+    const characters = document.getElementById("wordText").value.length;
+
+    document.getElementById("wordResult").textContent =
+        "Words: " + words.length +
+        " | Characters: " + characters;
+}
+
+function randomNumber() {
+    const minValue = document.getElementById("minNum").value;
+    const maxValue = document.getElementById("maxNum").value;
+    const result = document.getElementById("randomResult");
+
+    if (minValue.trim() === "" || maxValue.trim() === "") {
+        result.textContent = "Please enter both numbers.";
+        return;
+    }
+
+    const min = Number(minValue);
+    const max = Number(maxValue);
+
+    if (!Number.isSafeInteger(min) ||
+        !Number.isSafeInteger(max) ||
+        min > max) {
+        result.textContent =
+            "Enter valid whole numbers. Minimum must not exceed maximum.";
+        return;
+    }
+
+    result.textContent = "Your random number: " +
+        (Math.floor(Math.random() * (max - min + 1)) + min);
+}
+</script>
+
+</body>
+</html>
