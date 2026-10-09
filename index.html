@@ -696,67 +696,91 @@ function clearCompleted(){
   persist();renderTasks();renderDashboard();
 }
 
-let timerSeconds=25*60;
-let timerInitial=25*60;
-let timerInterval=null;
-let timerLabel="Focus session";
-let timerStartedAt=0;
+let timerSeconds = 25 * 60;
+let timerInitial = 25 * 60;
+let timerInterval = null;
+let timerLabel = "Focus session";
+let timerEndAt = 0;
 
-function drawTimer(){
-  const min=Math.floor(timerSeconds/60);
-  const sec=timerSeconds%60;
-  el("timerDisplay").textContent=String(min).padStart(2,"0")+":"+String(sec).padStart(2,"0");
-  const pct=timerInitial?timerSeconds/timerInitial*100:0;
-  el("timerRing").style.setProperty("--pct",pct+"%");
-  el("timerMode").textContent=timerLabel;
+function drawTimer() {
+  const min = Math.floor(timerSeconds / 60);
+  const sec = timerSeconds % 60;
+
+  el("timerDisplay").textContent =
+    String(min).padStart(2, "0") + ":" +
+    String(sec).padStart(2, "0");
+
+  const pct = timerInitial ? (timerSeconds / timerInitial) * 100 : 0;
+  el("timerRing").style.setProperty("--pct", pct + "%");
+  el("timerMode").textContent = timerLabel;
 }
 
-function setTimerMode(minutes,label){
+function setTimerMode(minutes, label) {
   pauseTimer();
-  timerLabel=label;
-  timerInitial=minutes*60;
-  timerSeconds=timerInitial;
+  timerLabel = label;
+  timerInitial = minutes * 60;
+  timerSeconds = timerInitial;
   drawTimer();
-  el("timerStatus").textContent="Ready for "+label.toLowerCase()+".";
+  el("timerStart").disabled = false;
+  el("timerStatus").textContent = "Ready for " + label.toLowerCase() + ".";
 }
 
-function startTimer(){
-  if(timerInterval!==null)return;
-  if(timerSeconds<=0){notify("Choose a timer mode first.");return;}
-  timerStartedAt=Date.now();
-  el("timerStart").disabled=true;
-  el("timerStatus").textContent="Timer running. Stay focused!";
-  timerInterval=setInterval(()=>{
-    const elapsed=Math.floor((Date.now()-timerStartedAt)/1000);
-    timerSeconds=Math.max(0,timerSeconds-elapsed);
-    timerStartedAt=Date.now();
+function startTimer() {
+  if (timerInterval !== null) return;
+  if (timerSeconds <= 0) {
+    notify("Choose a timer mode first.");
+    return;
+  }
+
+  timerEndAt = Date.now() + timerSeconds * 1000;
+  el("timerStart").disabled = true;
+  el("timerStatus").textContent = "Timer running. Stay focused!";
+
+  timerInterval = setInterval(() => {
+    timerSeconds = Math.max(0, Math.ceil((timerEndAt - Date.now()) / 1000));
     drawTimer();
-    if(timerSeconds===0) finishTimer();
-  },250);
+    if (timerSeconds === 0) finishTimer();
+  }, 200);
 }
 
-function pauseTimer(){
-  if(timerInterval!==null){
-    clearInterval(timerInterval);timerInterval=null;
-    el("timerStart").disabled=false;
-    el("timerStatus").textContent="Timer paused.";
+function pauseTimer() {
+  if (timerInterval !== null) {
+    timerSeconds = Math.max(0, Math.ceil((timerEndAt - Date.now()) / 1000));
+    clearInterval(timerInterval);
+    timerInterval = null;
+    drawTimer();
+    el("timerStart").disabled = false;
+    el("timerStatus").textContent = "Timer paused.";
   }
 }
 
-function finishTimer(){
-  pauseTimer();
-  if(timerLabel==="Focus session"){
-    data.focus.minutes+=Math.round(timerInitial/60);
+function finishTimer() {
+  if (timerInterval !== null) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+
+  timerSeconds = 0;
+  drawTimer();
+  el("timerStart").disabled = false;
+
+  if (timerLabel === "Focus session") {
+    data.focus.minutes += Math.round(timerInitial / 60);
     data.focus.sessions++;
-    persist();renderDashboard();
+    persist();
+    renderDashboard();
   }
-  el("timerStatus").textContent=timerLabel+" complete! Great work.";
-  notify(timerLabel+" complete!");
+
+  el("timerStatus").textContent = timerLabel + " complete! Great work.";
+  notify(timerLabel + " complete!");
 }
 
-function resetTimer(){
-  pauseTimer();timerSeconds=timerInitial;drawTimer();
-  el("timerStatus").textContent="Timer reset.";
+function resetTimer() {
+  pauseTimer();
+  timerSeconds = timerInitial;
+  drawTimer();
+  el("timerStart").disabled = false;
+  el("timerStatus").textContent = "Timer reset.";
 }
 
 function calculateGrade(){
